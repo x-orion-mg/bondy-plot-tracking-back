@@ -1,0 +1,97 @@
+<html>
+<head>
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet" />
+</head>
+<body>
+    <div id="map" style="width:100%; height:500px;"></div>
+    
+    <script>
+    
+    mapboxgl.accessToken = 'key';
+    const map = new mapboxgl.Map({
+      container: 'map',
+      //style: 'mapbox://styles/mapbox/satellite-v9',
+      style: 'mapbox://styles/mapbox/light-v10',
+      center: [48.9998304,
+          -19.0469481],
+      zoom: 17
+    });
+
+    map.on('load', () => {
+      map.addSource('drone-image', {
+            type: 'raster',
+            /*tiles: ['http://127.0.0.1:8000/uploads/parcel/image-drone/images/8/{z}/{x}/{y}.png'],*/
+            tiles: ['http://localhost/public/uploads/parcel/image-drone/images/11/{z}/{x}/{y}.png'],
+            tileSize: 256 ,
+            minzoom: 12,
+            maxzoom: 22,
+            scheme: 'tms',
+            bounds: [
+                -211302.878, // minx: 48.99975443544059
+                -212144.609, // miny: -19.05330869013719
+                211678.847,  // maxx: 49.00206112588315
+                213083.489   // maxy: -19.0469481083552
+            ]
+      });
+
+      map.addLayer({
+            id: 'drone-image-layer',
+            type: 'raster',
+            source: 'drone-image',
+            paint: {
+                'raster-opacity': 1
+            }
+        });
+
+
+        map.addSource('drone-image-outline', {
+            type: 'geojson',
+            data: {
+                type: 'Feature',
+                geometry: {
+                    type: 'Polygon',
+                    coordinates: [[
+                        [
+                            48.9998304,
+                            -19.0469481
+                        ],
+                        [
+                            48.9997544,
+                            -19.0532846
+                        ],
+                        [
+                            49.0019851,
+                            -19.0533087
+                        ],
+                        [
+                            49.0020609,
+                            -19.0469723
+                        ],
+                        [
+                            48.9998304,
+                            -19.0469481
+                        ]
+                    ]]
+                }
+            }
+        });
+
+        map.addLayer({
+            id: 'drone-image-border',
+            type: 'line',
+            source: 'drone-image-outline',
+            paint: {
+                'line-color': '#ff0000',
+                'line-width': 10
+            }
+        });
+
+
+
+
+    });
+    
+    </script>
+</body>
+</html>

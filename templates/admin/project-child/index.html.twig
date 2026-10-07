@@ -1,0 +1,120 @@
+{% extends 'base.html.twig' %}
+
+{% set menu_partner = true %}
+{% set menu_manage_prj_partner = true %}
+{% block body %}
+    <div class="page-header justify-content-between">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href={{ path('admin_dashboard') }}>Accueil</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{{ current_url }}">Gestion des partenaires</a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">Liste des projets partenaire</li>
+            </ol>
+        </nav>
+        <div>
+            <a href="{{ path('project_child_create') }}" class="btn btn-outline-primary" title="List" >Ajouter</a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="card-title">Filtres</h6>
+                    <form>
+                        <div class="row">
+                            {% if partners %}
+                                <div class="col-lg-3 col-md-6">
+                                    <div class="form-group">
+                                        <label>Partenaire</label>
+                                        <select class="select2-example" id="partnerFilter">
+                                            <option value="0">Tous</option>
+                                            {% for partner in partners %}
+                                                <option value="{{ partner.id }}">{{ partner.lastName }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            {% endif %}
+                            {% if project_steps %}
+                                <div class="col-lg-3 col-md-6">
+                                    <div class="form-group">
+                                        <label>Etape projet</label>
+                                        <select class="select2-example" id="projectStepFilter">
+                                            <option value="0">Tous</option>
+                                            {% for step in project_steps %}
+                                                <option value="{{ step.id }}">{{ step.projectStepName }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="myTable" class="table table-lg">
+                            <thead>
+                                <tr>
+                                    <th scope="col" class="text-center no-sort">Partenaire</th>
+                                    <th scope="col" class="no-sort">Nom du projet</th>
+                                    <th scope="col" class="text-center no-sort">Localisation</th>
+                                    <th scope="col" class="text-center no-sort">Date de début</th>
+                                    <th scope="col" class="text-center no-sort">Etape du projet</th>
+                                    <th scope="col" class="text-center no-sort">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="modal" tabindex="-1" role="dialog" id="deleteModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Suppression</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Voulez-vous supprimer cet élément ? Toutes les informations liées au projet seront supprimées en cascade (Parcelle - Rattachement) . Cet action est irreversible.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                    <a href="#" id="confirmDelete" type="button" class="btn btn-primary btn-confirm-delete">Supprimer</a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        var url_ajax_prj_partner   = "{{ path('project_child_list_ajax') }}";
+        var url_edit_prj_partner   = "{{ path('project_child_edit', {'id': 0}) }}";
+        var url_show_prj_partner   = "{{ path('project_child_show', {'id': 0}) }}";
+        var url_delete_prj_partner = "{{ path('project_child_delete', {'id': 0}) }}";
+        $('#deleteModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            let deleteUrl = button.data('delete-url');
+            console.log(deleteUrl);
+            var modal = $(this);
+            modal.find('#confirmDelete').attr('data-delete-url', deleteUrl);
+        });
+    </script>
+    <script src="{{ asset('admin/assets/js/js_backoffice/partner-project.js') }}"></script>
+{% endblock %}

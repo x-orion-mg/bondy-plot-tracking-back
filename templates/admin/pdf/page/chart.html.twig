@@ -1,0 +1,11 @@
+<svg
+	xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewbox="0 0 36 36">
+
+
+	<!-- Cercle de fond -->
+	<circle cx="18" cy="18" r="16" fill="none" stroke="#f0f0f0" stroke-width="4"/>
+
+	{% for species in treeSpecies %}
+		<circle cx="18" cy="18" r="16" fill="none" stroke="{{ species.color }}" stroke-width="4" stroke-dasharray="{{ species.percentage }} {{ 100 - species.percentage }}" stroke-dashoffset="{{ species.dashOffset }}" stroke-linecap="butt"/>
+	{% endfor %}
+</svg>

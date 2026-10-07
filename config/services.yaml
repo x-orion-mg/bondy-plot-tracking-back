@@ -1,0 +1,90 @@
+# This file is the entry point to configure your own services.
+# Files in the packages/ subdirectory configure your dependencies.
+
+# Put parameters here that don't need to change on each machine where the app is deployed
+# https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
+parameters:
+    locale: 'fr'
+    app_name: '%env(resolve:APP_NAME)%'
+    uploads_directory: '%kernel.project_dir%/public/uploads'
+    fixture_mode: false
+    frontend_base_url: '%env(FRONTEND_BASE_URL)%'
+    certificate_secret_key: '%env(CERTIFICATE_SECRET_KEY)%'
+
+services:
+    # default configuration for services in *this* file
+    _defaults:
+        autowire: true      # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+
+    # makes classes in src/ available to be used as services
+    # this creates a service per class whose id is the fully-qualified class name
+    App\:
+        resource: '../src/'
+        exclude:
+            - '../src/DependencyInjection/'
+            - '../src/Entity/'
+            - '../src/Kernel.php'
+
+    # add more service definitions when explicit configuration is needed
+    # please note that last definitions always *replace* previous ones
+
+    App\Controller\Security\ErrorController:
+        tags: ['controller.service_arguments']
+
+    App\Security\Command\:
+        resource: '../src/Security/Command'
+        tags: ['console.command']
+
+    App\EventListener\LoginActivityLogger:
+        arguments:
+            $logDirectory: '%kernel.project_dir%/var/log/login_activity'
+        tags:
+            - { name: kernel.event_listener, event: security.login_success, method: onLoginSuccess }
+            - { name: kernel.event_listener, event: security.authentication_failure, method: onLoginFailure }
+
+    App\EventListener\EntityListener:
+        arguments:
+            $security: '@security.helper'
+        tags:
+            - { name: doctrine.event_listener, event: prePersist }
+            - { name: doctrine.event_listener, event: preUpdate }
+
+    App\EventListener\EntityNotificationListener:
+        tags:
+            - { name: doctrine.event_listener, event: postPersist }
+            - { name: doctrine.event_listener, event: preUpdate }
+
+    App\Service\Notification\Handler\:
+        resource: '../src/Service/Notification/Handler'
+        tags: [ 'app.entity_notification_handler' ]
+        autowire: true
+        autoconfigure: true
+
+    App\Service\Notification\EntityNotificationManager:
+        arguments:
+            $handlers: !tagged_iterator 'app.entity_notification_handler'
+        autowire: true
+        autoconfigure: true
+
+    App\Utils\TwigExtension:
+        tags: ['twig.extension']
+
+    Liip\ImagineBundle\Service\FilterService: '@liip_imagine.service.filter'
+
+    App\Service\GpxConverter:
+        arguments:
+            $fileContent: ''  # Valeur par défaut vide
+    App\Controller\Admin\GalleryController:
+        arguments:
+            $strategies:
+                - '@App\Service\ImageProcessingStrategy'
+                - '@App\Service\VideoProcessingStrategy'
+    App\Twig\FileExtension:
+        arguments:
+            $fileService: '@App\Service\FileService'
+            $cropperService: '@App\Service\image\ImageCropper'
+        tags: [ 'twig.extension' ]
+    App\EventSubscriber\DoctrineEntityLoggerSubscriber:
+        tags:
+            - { name: doctrine.event_subscriber }

@@ -1,0 +1,612 @@
+{% extends 'base.html.twig' %}
+
+{% set menu_partner = true %}
+{% set menu_manage_prj_partner = true %}
+{% set country = project and project.projectParent and project.projectParent.localisation ? project.projectParent.localisation.country : 'Madagascar' %}
+{% set region = project and project.projectParent and project.projectParent.localisation ? project.projectParent.localisation.region : 'Analamanga' %}
+
+
+{% block body %}
+    <div class="page-header justify-content-between">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href={{ path('admin_dashboard') }}>Accueil</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{{ path('project_child_index') }}">Gestion des partenaires</a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">Modification projet partenaire</li>
+            </ol>
+        </nav>
+        <div>
+            <a href="{{ path('project_child_index') }}" class="btn btn-outline-primary" title="List">Retour</a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card">
+                <div class="app-sidebar-menu">
+                    <div class="list-group list-group-flush">
+                        <a href="#infoge" class="list-group-item active d-flex align-items-center">
+                            <i data-feather="globe" class="mr-2 width-15 height-15"></i>
+                            Informations générales
+                        </a>
+                        <a href="#localisation" class="list-group-item d-flex align-items-center">
+                            <i data-feather="map-pin" class="mr-2 width-15 height-15"></i>
+                            Localisation
+                        </a>
+                        <a href="#history" class="list-group-item d-flex align-items-center">
+                            <i data-feather="book" class="mr-2 width-15 height-15"></i>
+                            Histoire du projet
+                        </a>
+                        <a href="#chiffrecles" class="list-group-item d-flex align-items-center">
+                            <i data-feather="bar-chart-2" class="mr-2 width-15 height-15"></i>
+                            Chiffres clés
+                        </a>
+                        <a href="#parcelles" class="list-group-item d-flex align-items-center">
+                            <i data-feather="hexagon" class="mr-2 width-15 height-15"></i>
+                            Parcelles
+                        </a>
+                        <a href="#galerie" class="list-group-item d-flex align-items-center">
+                            <i data-feather="image" class="mr-2 width-15 height-15"></i>
+                            Galerie
+                        </a>
+                        <a href="#storytelling" class="list-group-item d-flex align-items-center">
+                            <i data-feather="film" class="mr-2 width-15 height-15"></i>
+                            Storytelling / Les moments forts
+                        </a>
+                        <a href="#sous-projets" class="list-group-item d-flex align-items-center">
+                            <i data-feather="folder-plus" class="mr-2 width-15 height-15"></i>
+                            Sous-projets / Projets locaux
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-md-9">
+            {{ form_start(form, {attr: {'id': 'id-edit-project-child', 'enctype': 'multipart/form-data'}}) }}
+            <div class="card" id="infoge">
+                <div class="card-header">
+                    Informations générales
+                </div>
+                <div class="card-body">
+                    <div class="form-row">
+                        <div class="form-group col-md-4">
+                            {{ form_row(form.title) }}
+                        </div>
+                        <div class="form-group col-md-4">
+                            {{ form_row(form.projectParent) }}
+                        </div>
+
+                        <div class="form-group col-md-4">
+                            {{ form_row(form.user) }}
+                        </div>
+                    </div>
+                    <div class="group-upload">
+                        <label>Bannière image <span class="text-danger">*</span></label>
+                        <small class="ml-1">(Dimension 707x205px)</small>
+                        <div class="boxBanner">
+                            <span class="ico-close">+</span>
+                            <img class="boxBanner_img" src="{{ project.bannerImage }}" alt="{{ project.projectParent.title ?? project.projectParent.projectType.label }}">
+                        </div>
+                        <div class="form-group group-file" style="display: {{ project.bannerImage|default('') == '' ? 'block' : 'none' }};">
+
+                            <div class="custom-file">
+                                <input type="file" class="custom-file-input" name="uploadFile">
+                                <label class="custom-file-label" for="customFile">Choisissez un fichier</label>
+                            </div>
+                            <small>Dimension 707x205px</small>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            {{ form_row(form.startDate) }}
+                        </div>
+
+                        <div class="form-group col-md-6">
+                            {{ form_row(form.projectStep) }}
+                        </div>
+                    </div>
+                    {# <div class="form-group form-check">
+                        <input type="checkbox" class="form-check-input" id="exampleCheck1">
+                        <label class="form-check-label" for="exampleCheck1">Envoyer une notification ?</label>
+                    </div> #}
+                </div>
+            </div>
+
+            <div class="card" id="localisation">
+                <div class="card-header">
+                    Localisation
+                </div>
+                <div class="card-body">
+                    <div class="form-row">
+                        <div class="form-group col-md-4">
+                            <label class="w-100">Pays
+                                <input type="text" disabled class="form-control" id="country"
+                                       aria-describedby="emailHelp" placeholder="" value="{{ country }}">
+                            </label>
+                        </div>
+
+                        <div class="form-group col-md-4">
+                            <label class="w-100">Région
+                            <input type="text" disabled class="form-control" id="region"
+                                   aria-describedby="emailHelp" placeholder="" value="{{ region }}">
+                            </label>
+                        </div>
+                        <div class="form-group col-md-4">
+                            {{ form_row(form.city) }}
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            {{ form_row(form.latitude) }}
+                        </div>
+
+                        <div class="form-group col-md-6">
+                            {{ form_row(form.longitude) }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" id="history">
+                <div class="card-header">
+                    Histoire du projet
+                </div>
+                <div class="card-body">
+                    <div class="form-group">
+                        {{ form_row(form.history) }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" id="chiffrecles">
+                <div class="card-header">
+                    Chiffres clés
+                </div>
+                <div class="card-body">
+                    <ul class="nav nav-tabs mb-3" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="home-tab" data-toggle="tab" href="#impact-environnemental"
+                               role="tab"
+                               aria-controls="home" aria-selected="true">Impact environnemental</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="profile-tab" data-toggle="tab" href="#impact-social" role="tab"
+                               aria-controls="profile" aria-selected="false">Impact Social</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="contact-tab" data-toggle="tab" href="#impact-economique" role="tab"
+                               aria-controls="contact" aria-selected="false">Impact Economique</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane fade show active" id="impact-environnemental" role="tabpanel"
+                             aria-labelledby="home-tab">
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    {{ form_row(form.environmentalImpactPlantedTrees) }}
+                                </div>
+                                <div class="form-group col-md-6">
+                                    {{ form_row(form.environmentalImpactCO2) }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="impact-social" role="tabpanel" aria-labelledby="profile-tab">
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    {{ form_row(form.socialImpactSeasonalJobs) }}
+                                </div>
+                                <div class="form-group col-md-6">
+                                    {{ form_row(form.socialImpactIndirectBeneficiaries) }}
+                                </div>
+                                <div class="form-group col-md-6">
+                                    {{ form_row(form.socialImpactPartnerFarmer) }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="impact-economique" role="tabpanel" aria-labelledby="contact-tab">
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    {{ form_row(form.economicImpactSustainableEmployment) }}
+                                </div>
+                                <div class="form-group col-md-6">
+                                    {{ form_row(form.economicImpactRestoredHectares) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                {# <a href="{{ path('project_child_index') }}" class="btn text-white btn-secondary">Annuler</a> #}
+                <button type="submit" class="btn btn-primary">Enregistrer</button>
+            </div>
+            {{ form_end(form) }}
+
+            <div class="card" id="parcelles">
+                <div class="card-header">
+                    Parcelles
+                    <a href="{{ path('parcel_create',{ 'entityType':'project-child', 'entityId': project.id}) }}"
+                       class="btn btn-primary text-white float-right"
+                       title="Ajouter un élément">Ajouter</a>
+                </div>
+                <div class="card-body">
+                    {% if parcels is not empty %}
+                        <div class="table-responsive">
+                            <table id="table-parcelles" class="table table-striped table-bordered">
+                                <thead>
+                                <tr>
+                                    <th>Nom de la parcelle</th>
+                                    <th>Nombre d'arbres total</th>
+                                    <th>Arbres disponibles</th>
+                                    <th>Espèce d'arbres</th>
+                                    <th>Actions</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for parcel in parcels %}
+                                    <tr>
+                                        <td>{{ parcel.parcelTitle }}</td>
+                                        <td>{{ parcel.totalTreeNumber ?? 0 }}</td>
+                                        <td>{{ parcel.totalAvailableTreeNumber ?? 0 }}</td>
+                                        <td>{{ parcel.treeSpeciesNames ?? '-'}}</td>
+                                        <td>
+                                            <a href="{{ path('parcel_edit', {'id': parcel.parcelId}) }}"
+                                               class="text-secondary" title="Modifier">
+                                                <i class="ti-pencil"></i>
+                                            </a>
+                                            <a href="javascript:void(0);" class="text-danger ml-2 delete-parcel"
+                                               data-toggle="modal" data-parcel-id="{{ parcel.parcelId }}"
+                                               data-target="#deleteParcelModal" title="Supprimer">
+                                                <i class="ti-trash"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <p class="text-center">Aucune parcelle pour ce projet.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="card" id="galerie">
+                <div class="card-header">
+                    Galerie
+                    <a href="#" data-toggle="modal" data-target="#editGalerieModal"
+                       class="btn btn-primary text-white float-right" title="Ajouter un élément">Ajouter</a>
+                </div>
+                <div class="card-body">
+                    {% if galleries is not empty %}
+                        <div class="gallery-container">
+                            {% for gallery in galleries %}
+                                <div class="drawings">
+                                    <div class="image-hover">
+                                        <img src="{{ gallery.thumbnailUrl }}" class="rounded" alt="image">
+                                        <div class="image-hover-body rounded">
+                                            <div>
+                                                <a href="{{ gallery.url }}"
+                                                   class="image-popup-gallery-item text-info" title="Visualiser">
+                                                    <i class="ti-eye"></i>
+                                                </a>
+                                                <a href="javascript:void(0)"
+                                                   class="text-secondary ml-2"
+                                                   data-toggle="modal"
+                                                   data-target="#editGalerieModal"
+                                                   data-gallery-id="{{ gallery.id }}"
+                                                   data-gallery-caption="{{ gallery.caption }}"
+                                                   data-gallery-url="{{ gallery.url }}"
+                                                   data-gallery-format="{{ gallery.type }}"
+                                                   title="Modifier">
+                                                    <i class="ti-pencil"></i>
+                                                </a>
+                                                <a href="javascript:void(0)"
+                                                   data-toggle="modal"
+                                                   data-target="#deleteModal"
+                                                   data-delete-id="{{ gallery.id }}"
+                                                   data-type="gallery"
+                                                   class="text-danger ml-2"
+                                                   title="Supprimer"
+                                                >
+                                                    <i class="ti-trash"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <h6 class="mb-1 mt-1">{{ gallery.caption }}</h6>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-center">Il n'y a pas de donnée</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="card" id="storytelling">
+                <div class="card-header">
+                    Storytelling / Les moments forts
+                    <a href="{{ path('story_telling_new', {'entityId': project.id, 'entityType': 'project-child'}) }}"
+                       class="btn btn-primary text-white float-right"
+                       title="Ajouter un élément">Ajouter</a>
+                </div>
+                <div class="card-body">
+                    {% if storyTelling is not empty %}
+                        <div class="row">
+                            {% for story in storyTelling %}
+                                <div class="col-xl-4 col-lg-6">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <img src="{{ story.bannerImage }}" class="w-100" alt="{{ story.title }}">
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="d-flex align-items-center">
+                                                <h5 class="mb-0">
+                                                    <a href="#" class="link-2">{{ story.title }}</a>
+                                                </h5>
+                                                <div class="dropdown ml-auto">
+                                                    <a href="javascript:void(0)"
+                                                       data-toggle="dropdown"
+                                                       aria-haspopup="true"
+                                                       aria-expanded="false">
+                                                        <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
+                                                    </a>
+                                                    <div class="dropdown-menu dropdown-menu-right">
+                                                        <a href="{{ path('story_telling_edit', {'entityId': project.id, 'entityType': 'project-child', 'id': story.id}) }}"
+                                                           class="dropdown-item"><i
+                                                                    class="ti-pencil"></i> Modifier</a>
+                                                        <a href="#" data-toggle="modal"
+                                                           data-target="#deleteModal"
+                                                           data-delete-id="{{ story.id }}"
+                                                           data-type="storytelling"
+                                                           class="dropdown-item text-danger"><i class="ti-trash"></i>
+                                                            Supprimer</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <p>{{ story.description }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-center">Il n'y a pas de donnée</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="card" id="sous-projets">
+                <div class="card-header">
+                    Sous-projets / Projets locaux
+                    <a href="{{ path('subproject_new',{ 'entityType':'project-child', 'entityId': project.id}) }}"
+                       class="btn btn-primary text-white float-right" title="Ajouter un élément">Ajouter</a>
+                </div>
+                <div class="card-body">
+                    {% if subProjects is not empty %}
+                        <div class="row">
+                            {% for subProject in subProjects %}
+                                <div class="col-xl-4 col-lg-6">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <img src="{{ subProject.banner }}" class="w-100"
+                                                 alt="{{ subProject.name }}">
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="d-flex align-items-center">
+                                                <h5 class="mb-0">
+                                                    <a href="#" class="link-2">{{ subProject.name }}</a>
+                                                </h5>
+                                                <div class="dropdown ml-auto">
+                                                    <a href="{{ path('subproject_new', {'entityId': project.id, 'entityType': 'project-child'}) }}"
+                                                       data-toggle="dropdown" aria-haspopup="true"
+                                                       aria-expanded="false">
+                                                        <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
+                                                    </a>
+                                                    <div class="dropdown-menu dropdown-menu-right">
+                                                        <a href="{{ path('subproject_edit', {'entityId': project.id, 'entityType': 'project-child', 'id': subProject.id}) }}"
+                                                           class="dropdown-item">
+                                                            <i class="ti-pencil"></i>
+                                                            Modifier
+                                                        </a>
+                                                        <a href="javascript:void(0)"
+                                                           data-toggle="modal"
+                                                           data-target="#deleteModal"
+                                                           data-delete-id="{{ subProject.id }}"
+                                                           data-type="subproject"
+                                                           class="dropdown-item text-danger">
+                                                            <i class="ti-trash"></i>
+                                                            Supprimer
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="text-muted small mt-1 mb-3">
+                                                <i data-feather="map-pin" class="mr-2 width-15 height-15"></i>
+                                                {{ country }}
+                                                , {{ region }}
+                                                , {{ subProject.city }}
+                                            </div>
+                                            <p>{{ subProject.historyExcerpt }}</p>
+                                            {% if subProject.startDate and subProject.startDate|date('Y') > 0 %}
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <div class="text-muted mb-1 small"><i
+                                                                    class="fa fa-calendar"></i> Début
+                                                        </div>
+                                                        <div>{{ subProject.startDate|date('d/m/Y') }}</div>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-center">Il n'y a pas de donnée</p>
+                    {% endif %}
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="modal" tabindex="-1" role="dialog" id="editGalerieModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Ajout/Modification galerie</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="gallery-edit" method="post">
+                        <div class="form-group">
+                            <label class="w-100">Titre de la photo<span class="text-danger">*</span>
+                            <input type="text" class="form-control" name="caption"
+                                   aria-describedby="emailHelp" placeholder="" required>
+                            </label>
+                        </div>
+
+                        <div class="group-upload">
+                            <label>Fichier image ou vidéo <span class="text-danger">*</span></label>
+                            <div class="boxBanner">
+                                <span class="ico-close">+</span>
+                                <img class="boxBanner_img" src="" alt="">
+                            </div>
+                            <div class="form-group group-file" style="display: none;">
+
+                                <div class="custom-file">
+                                    <input type="file" class="custom-file-input" id="customFile" name="uploadFile">
+                                    <label class="custom-file-label" for="customFile">Choisissez un fichier</label>
+                                </div>
+                                <small>Formats acceptés : jpeg, jpg, png, mp4, webm, ogg<br>
+                                    Taille maximum image : 5 mo<br>
+                                    Taille maximum vidéo : 20 mo
+                                </small>
+                            </div>
+                        </div>
+                        <input type="hidden" name="gallery_id">
+                        <button type="submit" class="btn btn-primary">Enregistrer</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" tabindex="-1" role="dialog" id="deleteModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Suppression</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Voulez-vous supprimer cet élément ? Cette action est irreversible.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                    <a href="#" id="confirmDelete" type="button" class="btn btn-primary">Supprimer</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" tabindex="-1" role="dialog" id="deleteParcelModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Suppression</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Voulez-vous supprimer cet élément ? Cet action est irreversible.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                    <a href="javascript:void(0);" id="confirmDeleteParcel" type="button" class="btn btn-primary">Supprimer</a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        var url_parent_location = "{{ path('project_parent_location') }}";
+        var url_delete_parcel = "{{ path('delete_parcel') }}";
+    </script>
+    <script src="{{ asset('admin/vendors/lightbox/jquery.magnific-popup.min.js') }}"></script>
+    <script src="{{ asset('admin/vendors/fixto/fixto.js') }}"></script>
+    <script src="{{ asset('admin/vendors/summernote/summernote-bs4.min.js') }}"></script>
+    <script src="{{ asset('admin/assets/js/anchor.js') }}"></script>
+    <script src="{{ asset('admin/assets/js/js_backoffice/partner-project-edit.js') }}"></script>
+
+    <script>
+        $('#editGalerieModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget); // Button that triggered the modal
+            var galleryId = button.data('gallery-id');
+            var galleryCaption = button.data('gallery-caption');
+            var galleryFormat = button.data('gallery-format');
+            var galleryImage = button.data('gallery-url');
+
+            var modal = $(this);
+            if (galleryId) {
+                modal.find('form').attr('action', '{{ path('gallery_edit', {'entityId': project.id, 'entityType': 'project-child', 'id': 'GALLERY_ID'}) }}'.replace('GALLERY_ID', galleryId));
+                modal.find('input[name="gallery_id"]').val(galleryId);
+            } else {
+                modal.find('form').attr('action', '{{ path('gallery_new', {'entityId': project.id, 'entityType': 'project-child'}) }}');
+            }
+            modal.find('form').attr('method', 'POST'); // Ensure the method is POST
+            modal.find('input[name="caption"]').val(galleryCaption);
+            modal.find('select[name="format"]').val(galleryFormat);
+
+            if (galleryImage) {
+                modal.find('.boxBanner_img').attr('src', galleryImage);
+                modal.find('.group-file').hide();
+                modal.find('.boxBanner').show();
+            } else {
+                modal.find('.boxBanner').hide();
+                modal.find('.group-file').show();
+            }
+
+            // Clear the file input
+            //modal.find('input[name="file"]').val('');
+        });
+
+        $('#deleteModal').on('show.bs.modal', function (event) {
+            let deleteUrl = '';
+            var button = $(event.relatedTarget); // Button that triggered the modal
+            var deleteId = button.data('delete-id'); // Extract info from data-* attributes
+            var type = button.data('type'); // Extract info from data-* attributes
+            switch (type) {
+                case 'subproject':
+                    deleteUrl = '{{ path('subproject_delete', {'entityId': project.id, 'entityType': 'project-child', 'id': 'SUBPROJECT_ID'}) }}';
+                    deleteUrl = deleteUrl.replace('SUBPROJECT_ID', deleteId); // Replace placeholder with actual ID
+                    break;
+                case'gallery':
+                    deleteUrl = '{{ path('gallery_delete',{'entityId':project.id,'entityType':'project-child','id':'GALLERY_ID'}) }}';
+                    deleteUrl = deleteUrl.replace('GALLERY_ID', deleteId);//ReplaceplaceholderwithactualID
+                    break;
+
+                default:
+                    break;
+            }
+            var modal = $(this);
+            modal.find('#confirmDelete').data('delete-url', deleteUrl);  // Update the href attribute
+        });
+    </script>
+{% endblock %}

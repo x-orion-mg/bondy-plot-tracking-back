@@ -1,0 +1,11 @@
+GET {{site_url}}/api/v1/projects/child
+Content-Type: application/json
+
+### GET request child project by id
+GET {{site_url}}/api/v1/projects/child/1
+Accept: application/json
+
+
+### GET request child project by parent id and partner id
+GET {{site_url}}/api/v1/projects/parents/1/partners/12/child
+Accept: application/json

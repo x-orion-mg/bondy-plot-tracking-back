@@ -1,0 +1,210 @@
+{% extends 'base.html.twig' %}
+
+{% set menu_bondy = true %}
+{% set menu_manage_localisation = true %}
+{% block body %}
+    <div class="page-header justify-content-between">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href={{ path('admin_dashboard') }}>Accueil</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{{ current_url }}">Gestion projets Bondy</a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">Localisation</li>
+            </ol>
+        </nav>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive">
+
+                        <table id="myTable" class="table table-striped table-bordered">
+                            <thead>
+                                <tr>
+                                    <th class="">Pays</th>
+                                    <th>Région</th>
+                                    <th class="no-sort">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if localisations %}
+                                    {% for localisation in localisations %}
+                                    <tr>
+                                        <td>{{ localisation.country }}</td>
+                                        <td>{{ localisation.region }}</td>
+                                        <td>
+                                            <a href="#" class="text-info" title="Visualiser"
+                                                data-toggle="modal" data-target="#viewLocationModal"
+                                                data-country="{{ localisation.country }}" 
+                                                data-region="{{ localisation.region }}"
+                                                data-shape-id="{{ localisation.shapeId }}"
+                                                data-latitude="{{ localisation.latitude }}"
+                                                data-longitude="{{ localisation.longitude }}"
+                                                data-bounds="{{ localisation.bounds|json_encode }}">
+                                                <i class="ti-eye"></i>
+                                            </a>
+                                            <a href="#" class="text-secondary" data-toggle="modal" data-target="#editLocationModal" title="Modifier"
+                                                data-id="{{ localisation.id }}" 
+                                                data-country="{{ localisation.country }}" 
+                                                data-region="{{ localisation.region }}"
+                                                data-shape-id="{{ localisation.shapeId }}"
+                                                data-latitude="{{ localisation.latitude }}"
+                                                data-longitude="{{ localisation.longitude }}"
+                                                data-bounds="{{ localisation.bounds|json_encode }}"
+                                                data-edit-localisation="{{ path('localisation_edit') }}">
+                                                <i class="ti-pencil"></i>
+                                            </a>
+                                            {# <a href="#" class="text-danger ml-2" data-toggle="modal" data-target="#deleteLocation" title="Supprimer">
+                                                <i class="ti-trash"></i>
+                                            </a> #}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                {% endif %}
+
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="modal" tabindex="-1" role="dialog" id="editLocationModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Modification localisation</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="id-edit-location" action="{{ path('localisation_edit')}}" method="POST" enctype="multipart/form-data">
+                        <div class="form-group">
+                            <label>Pays <span class="text-danger">*</span></label>
+                            <select class="select2-example" name="country" disabled>
+                                <option>Select</option>
+                                <option value="Madagascar">Madagascar</option>
+                                <option value="France">France</option>
+                                <option value="Togo">Togo</option>
+                                <option value="Comores">Comores</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Région <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" name="region"
+                                    aria-describedby="emailHelp" placeholder="" required>
+                        </div>
+                        <div class="form-group">
+                            <label>ShapeID <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" name="shape_id"
+                                    aria-describedby="emailHelp" placeholder="" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Latitude <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" name="latitude"
+                                   step="0.000001" min="-90" max="90" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Longitude <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" name="longitude"
+                                   step="0.000001" min="-180" max="180" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Bounds <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" name="bounds"
+                                    aria-describedby="emailHelp" placeholder="" required>
+                        </div>
+                        <input type="hidden" name="id" id="id">
+                        <button type="submit" class="btn-edit-localisation btn btn-primary">Enregistrer</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" tabindex="-1" role="dialog" id="deleteLocation">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Suppression</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Voulez-vous supprimer cet élément ? Cet action est irreversible.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                    <button type="button" class="btn btn-primary">Supprimer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" tabindex="-1" role="dialog" id="viewLocationModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Détail localisation</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Pays</label>
+                        <select class="select2-example" name="country" disabled>
+                            <option>Select</option>
+                            <option value="Madagascar">Madagascar</option>
+                            <option value="France">France</option>
+                            <option value="Togo">Togo</option>
+                            <option value="Comores">Comores</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Région</label>
+                        <input type="text" class="form-control" name="region"
+                                aria-describedby="emailHelp" placeholder="" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label>ShapeID</label>
+                        <input type="text" class="form-control" name="shape_id"
+                                aria-describedby="emailHelp" placeholder="" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label>Latitude</label>
+                        <input type="text" class="form-control" name="latitude"
+                                aria-describedby="emailHelp" placeholder="" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label>Longitude</label>
+                        <input type="text" class="form-control" name="longitude"
+                                aria-describedby="emailHelp" placeholder="" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label>Bounds</label>
+                        <input type="text" class="form-control" name="bounds"
+                                aria-describedby="emailHelp" placeholder="" disabled>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('admin/assets/js/js_backoffice/localisation.js') }}"></script>
+{% endblock %}

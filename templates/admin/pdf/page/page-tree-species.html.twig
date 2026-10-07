@@ -1,0 +1,36 @@
+<div class="page page-6">
+	<img class="background" src="{{ images['background'] }}" alt="image">
+
+	<img class="mini-logo" src="{{ images[0] }}" alt="mini-logo">
+
+	<img class="top-logo" src="{{ convert_file_to_base64(user.logo) }}" alt="logo partener">
+
+
+	<div class="text">
+
+		<h2>Planted Species</h2>
+
+		<div class="chart-container">
+
+			<img src="{{ chart }}" alt="chart">
+
+			<div class="center-text">
+				<div class="label">{{ totalTreeCount|number_format(0, ' ', ' ') }}</div>
+				<p>trees</p>
+			</div>
+		</div>
+
+
+		<div class="text_context">
+			{% for treeSpecie in treeSpecies %}
+				<div class="legende">
+					<div class="color" style='background: {{ treeSpecie.color }}'></div>
+					<div class="text_legende">{{ treeSpecie.commonName }}
+						({{ treeSpecie.scientificName }})</div>
+					<span>{{ treeSpecie.treeCount|number_format(0, ' ', ' ') }}</span>
+				</div>
+			{% endfor %}
+		</div>
+
+	</div>
+</div>

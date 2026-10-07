@@ -1,0 +1,148 @@
+{% extends 'base.html.twig' %}
+
+{% set menu_partner = true %}
+{% set menu_manage_prj_partner = true %}
+
+{% block body %}
+    <div class="page-header justify-content-between">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href={{ path('admin_dashboard') }}>Accueil</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{{ path('project_child_index') }}">Gestion des partenaires</a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">Création nouveau parcelle</li>
+            </ol>
+        </nav>
+        <div>
+            <a href="{{ path('project_child_edit', {'id': project.id}) }}" class="btn btn-outline-primary" title="List" >Retour</a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card">
+                <div class="app-sidebar-menu">
+                    <div class="list-group list-group-flush">
+                        <a href="#infoge" class="list-group-item active d-flex align-items-center">
+                            <i data-feather="globe" class="mr-2 width-15 height-15"></i>
+                            Informations générales
+                        </a>
+                        <a href="#localisation" class="list-group-item d-flex align-items-center">
+                            <i data-feather="map-pin" class="mr-2 width-15 height-15"></i>
+                            Localisation
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <form id="id-create-parcel" enctype="multipart/form-data" method="POST" action="{{ path('create_parcel_ajax') }}">
+                <div class="card" id="infoge">
+                    <div class="card-header">
+                        Informations générales
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label>Nom de la parcelle <span class='text-danger'>*</span></label>
+                            <input type="text" class="form-control" name="title"
+                                   aria-describedby="emailHelp" placeholder="" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Bannière image <span class="text-danger">*</span></label>
+                            <div class="custom-file">
+                                <input type="file" class="custom-file-input" name="uploadFile" required>
+                                <label class="custom-file-label" for="customFile">Choisissez un fichier</label>
+                            </div>
+                            <small>Dimension 707x205px</small>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label >Date de début <span class="text-danger">*</span></label>
+                                <input type="text" name="startDate" class="datepick form-control" required>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label>Année de plantation <span class="text-danger">*</span></label>
+                                <select class="form-control" name="plantingYear" aria-describedby="emailHelp" required>
+                                    {% for year in year_range() %}
+                                        <option value="{{ year }}">{{ year }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" id="localisation">
+                    <div class="card-header">
+                        Localisation
+                    </div>
+                    <div class="card-body">
+                    {% set location = project.projectParent.localisation %}
+                        <div class="form-row">
+                            <div class="form-group col-md-4">
+                                <label >Pays</label>
+                                <input type="text" disabled class="form-control"
+                                        aria-describedby="emailHelp" placeholder="" value="{{ location.country }}">
+                            </div>
+
+                            <div class="form-group col-md-4">
+                                <label >Région</label>
+                                <input type="text" disabled class="form-control"
+                                        aria-describedby="emailHelp" placeholder="" value="{{ location.region }}">
+                            </div>
+
+                            <div class="form-group col-md-4">
+                                <label >Ville</label>
+                                <input type="text" class="form-control" name="city"
+                                       aria-describedby="emailHelp" placeholder="">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label>Latitude <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" name="latitude"
+                                       aria-describedby="emailHelp" placeholder="" required>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label>Longitude <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" name="longitude"
+                                       aria-describedby="emailHelp" placeholder="" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label >Délimitation parcelle <span class="text-danger">*</span></label>
+                            <div class="custom-file">
+                                <input type="file" class="custom-file-input" id="customBoundaryFile" name="boundaryFile" required>
+                                <label class="custom-file-label" for="customBoundaryFile">Choisissez un fichier</label>
+                            </div>
+                            <small>Document GPX ou KML </small>
+                            <label id="boundary-error" class="error" for="customBoundaryFile" style="display: none;">
+                                Veuillez sélectionner un fichier au format KML ou GPX.
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <input type="hidden" name="projectId" value="{{ project.id }}">
+                <div class="modal-footer">
+                    <a href="{{ path('project_child_edit', {'id': project.id}) }}" class="btn text-white btn-secondary">Annuler</a>
+                    <button type="submit" class="btn btn-primary">Enregistrer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('admin/vendors/lightbox/jquery.magnific-popup.min.js') }}"></script>
+    <script src="{{ asset('admin/vendors/fixto/fixto.js') }}"></script>
+    <script src="{{ asset('admin/assets/js/anchor.js') }}"></script>
+    <script src="{{ asset('admin/assets/js/table-repeater.js') }}"></script>
+    <script src="{{ asset('admin/assets/js/js_backoffice/parcels.js') }}"></script>
+    <script src="{{ asset('admin/assets/js/js_backoffice/parcel-extensions.js') }}"></script>
+{% endblock %}

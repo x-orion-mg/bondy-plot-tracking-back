@@ -1,0 +1,6 @@
+GET {{site_url}}/api/v1/storytelling
+Content-Type: application/json
+
+### GET request story telling by id
+GET {{site_url}}/api/v1/storytelling/1
+Accept: application/json

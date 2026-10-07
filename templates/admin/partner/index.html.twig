@@ -1,0 +1,205 @@
+{% extends 'base.html.twig' %}
+
+{% set menu_partner = true %}
+{% set menu_manage_partner = true %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .btn-disabled {
+            pointer-events: none;
+            opacity: 0.5;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="page-header justify-content-between">
+        <nav aria-label="breadcrumb" class="d-flex align-items-start">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href={{ path('admin_dashboard') }}>Accueil</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{{ current_url }}">Gestion des partenaires</a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">Liste des partenaires</li>
+            </ol>
+        </nav>
+        <div>
+            <a href="#" data-toggle="modal" data-target="#editModalPartner" class="btn btn-outline-primary btn-create-partner" title="List" >Ajouter</a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="myTable" class="table table-lg">
+                            <thead>
+                                <tr>
+                                    <th class="no-sort">Nom du partenaire</th>
+                                    <th class="no-sort">Logo</th>
+                                    <th class="no-sort">Email contact</th>
+                                    <th class="no-sort">Nombre de projet</th>
+                                    <th class="no-sort">Certificat</th>
+                                    <th class="no-sort">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if partners %}
+                                    {% for partner in partners %}
+                                        <tr>
+                                            <td>{{ partner.lastName }}</td>
+                                            <td class=""><img src="{{ partner.logo }}" alt="{{ partner.lastName }}" style="width: 33px;"></td>
+                                            <td><a href="mailto:{{ partner.email }}"><i class="fa fa-envelope"></i> {{ partner.email }}</a></td>
+                                            <td>
+                                                <span class="badge badge-pill bg-success">
+                                                    <span class="font-weight-light">{{ partner.projectCount ?? 0 }}</span>
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <div class="custom-control custom-checkbox">
+                                                    <input type="checkbox" class="custom-control-input" {{ partner.hasCertificate == true ? 'checked' : '' }}>
+                                                    <label class="custom-control-label" for="customCheck"></label>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <a href="javascript:void(0);" class="text-secondary ml-2 btn-edit-partner" data-toggle="modal" data-target="#editModalPartner"
+                                                data-id="{{ partner.id }}"
+                                                data-logo="{{ partner.logo }}"
+                                                data-name="{{ partner.lastName }}"
+                                                data-email="{{ partner.email }}"
+                                                data-address="{{ partner.address }}"
+                                                data-phone="{{ partner.phone }}"
+                                                data-project-count="{{ partner.projectCount ?? 0 }}">
+                                                    <i class="ti-pencil" data-toggle="tooltip" title="Modifier"></i>
+                                                </a>
+                                                <a href="javascript:void(0);" class="text-danger ml-2 btn-delete-partner" data-toggle="modal" data-target="#deleteModal" data-id="{{ partner.id }}" >
+                                                    <i class="ti-trash" data-toggle="tooltip" title="Supprimer"></i>
+                                                </a>
+                                                 <a href="{{ path('user_certificate_report', { 'id': partner.id }) }}" class="text-info ml-2" data-toggle="tooltip" title="Certificat & Rapport" data-id="{{ partner.id }}" >
+                                                    <i class="ti-pie-chart"></i>
+                                                </a>
+                                                <a href="{{ path('user_customer_finals', { 'id': partner.id }) }}" class="text-dark ml-2" data-toggle="tooltip" title="Gestion des client finaux" data-id="{{ partner.id }}">
+                                                    <i class="fa fa-qrcode"></i>
+                                                </a>
+                                                <a href="javascript:void(0);"
+                                                   class="text-dark btn-find-partner-url ml-2 {{ partner.projectCount > 0 ? '' : 'btn-disabled' }}"
+                                                   data-toggle="tooltip"
+                                                   title="Copier le lien du partenaire"
+                                                   data-user-id="{{ partner.id }}">
+                                                    <i class="fa fa-link" aria-hidden="true"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Ajout ou Edition -->
+    <div class="modal" tabindex="-1" role="dialog" id="editModalPartner">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Ajout / Modification de partenaire</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form enctype="multipart/form-data" id="id-form-partner" method="POST">
+                        <input type="hidden" name="partner_id">
+                        <div class="group-upload">
+                            <label>Logo <span class="text-danger">*</span></label>
+                            <small class="ml-1">(Dimensions recommandées : minimum 50x50px, maximum : carré supérieur à 50px)</small>
+                            <div class="boxBanner">
+                                <span class="ico-close" style="color: black!important;">+</span>
+                                <img class="boxBanner_img" src="" alt="Image bannière">
+                            </div>
+                            <div class="form-group group-file" style="display: none;">
+                                <div class="custom-file">
+                                    <input type="file" class="custom-file-input" name="uploadFile">
+                                    <label class="custom-file-label" for="customFile">Choisissez un fichier</label>
+                                </div>
+                                <small>Largeur maximal 200px</small>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Nom du partenaire <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" name="partner_name"
+                                    aria-describedby="emailHelp" placeholder="" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Email contact <span class="text-danger">*</span></label>
+                            <input type="email" class="form-control" name="partner_email"
+                                    aria-describedby="emailHelp" placeholder="" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Téléphone</label>
+                            <input type="text" class="form-control" name="partner_phone"
+                                    aria-describedby="phoneHelp" placeholder="" >
+                        </div>
+
+                        <div class="form-group">
+                            <label>Adresse</label>
+                            <input type="text" class="form-control" name="partner_address"
+                                    aria-describedby="addressHelp" placeholder="" >
+                        </div>
+
+                         <div class="form-group">
+                            <label>Nombre de projet</label>
+                            <input type="text" class="form-control"
+                                    aria-describedby="emailHelp" name="project_count" disabled>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-save-partner text-white">Enregistrer</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Modal Ajout ou Edition -->
+
+    <!-- Modal Suppression -->
+    <div class="modal" tabindex="-1" role="dialog" id="deleteModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Suppression</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Voulez-vous supprimer cet élément ? <br>Toutes les informations liées au partenaire seront supprimés en cascade.<br>Cet action est irreversible.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                    <a href="javascript:void(0);" class="btn btn-primary btn-confirm-delete text-white">Supprimer</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Modal Suppression -->
+
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        var url_create_partner = "{{ path('partner_new') }}";
+        var url_delete_partner = "{{ path('partner_delete') }}";
+        var url_find_partner_link = "{{ path('find_partner_link') }}";
+        const csrf_token = '{{ csrf_token('delete_partner') }}';
+    </script>
+    <script src="{{ asset('admin/assets/js/js_backoffice/partner.js') }}"></script>
+{% endblock %}

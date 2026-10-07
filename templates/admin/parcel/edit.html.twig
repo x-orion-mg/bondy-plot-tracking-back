@@ -1,0 +1,601 @@
+{% extends 'base.html.twig' %}
+
+{% set menu_partner = true %}
+{% set menu_manage_prj_partner = true %}
+
+{% block body %}
+	<div class="page-header justify-content-between">
+		<nav aria-label="breadcrumb">
+			<ol class="breadcrumb">
+				<li class="breadcrumb-item">
+					<a href={{ path('admin_dashboard') }}>Accueil</a>
+				</li>
+				<li class="breadcrumb-item">
+					<a href="{{ path('project_child_index') }}">Gestion des partenaires</a>
+				</li>
+				<li class="breadcrumb-item active" aria-current="page">Modification parcelle</li>
+			</ol>
+		</nav>
+		<div>
+			<a href="{{ path('project_child_edit', {'id': project.id}) }}" class="btn btn-outline-primary" title="List">Retour</a>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-3">
+			<div class="card">
+				<div class="app-sidebar-menu">
+					<div class="list-group list-group-flush">
+						<a href="#infoge" class="list-group-item active d-flex align-items-center">
+							<i data-feather="globe" class="mr-2 width-15 height-15"></i>
+							Informations générales
+						</a>
+						<a href="#localisation" class="list-group-item d-flex align-items-center">
+							<i data-feather="map-pin" class="mr-2 width-15 height-15"></i>
+							Localisation
+						</a>
+						<a href="#imagedrone" class="list-group-item d-flex align-items-center">
+							<i data-feather="image" class="mr-2 width-15 height-15"></i>
+							Image drone
+						</a>
+						<a href="#trees" class="list-group-item d-flex align-items-center">
+							<i class="fa fa-tree mr-2 width-15 height-15"></i>
+							Arbres
+						</a>
+						<a href="#galerie" class="list-group-item d-flex align-items-center">
+							<i data-feather="image" class="mr-2 width-15 height-15"></i>
+							Galerie
+						</a>
+						<a href="#storytelling" class="list-group-item d-flex align-items-center">
+							<i data-feather="film" class="mr-2 width-15 height-15"></i>
+							Story telling / Les moments forts
+						</a>
+					</div>
+
+				</div>
+			</div>
+		</div>
+		<div class="col-md-9">
+			<form id="id-edit-parcel" enctype="multipart/form-data" method="POST" action="{{ path('edit_parcel_ajax', {'id': parcel.id }) }}">
+				<div class="card" id="infoge">
+					<div class="card-header">
+						Informations générales
+					</div>
+					<div class="card-body">
+						<div class="form-group">
+							<label>Nom de la parcelle
+								<span class='text-danger'>*</span>
+							</label>
+							<input type="text" class="form-control" name="title" aria-describedby="emailHelp" placeholder="" value="{{ parcel.title }}" required>
+						</div>
+						<div class="group-upload">
+							<label>Bannière image
+								<span class="text-danger">*</span>
+							</label>
+							<div class="boxBanner">
+								<span class="ico-close">+</span>
+								<img class="boxBanner_img" src="{{ parcel.bannerImage }}" alt="{{ project.projectParent.title ?? project.projectParent.projectType.label }}">
+							</div>
+							<div class="form-group group-file" style="display: {{ parcel.bannerImage|default('') == '' ? 'block' : 'none' }};">
+								<div class="custom-file">
+									<input type="file" class="custom-file-input" name="uploadFile" required>
+									<label class="custom-file-label" for="customFile">Choisissez un fichier</label>
+								</div>
+								<small>Dimension 707x205px</small>
+							</div>
+						</div>
+						<div class="form-row">
+							<div class="form-group col-md-6">
+								<label>Date de début
+									<span class="text-danger">*</span>
+								</label>
+								<input type="text" name="startDate" class="datepick form-control" value="{{ parcel.startDate|date('d/m/Y') }}" required>
+							</div>
+							<div class="form-group col-md-6">
+								<label>Année de plantation
+									<span class="text-danger">*</span>
+								</label>
+								<select class="form-control" name="plantingYear" aria-describedby="emailHelp" required>
+									{% for year in year_range() %}
+										<option value="{{ year }}" {{ year == parcel.plantingYear|date('Y') ? 'selected' : '' }}>{{ year }}</option>
+									{% endfor %}
+								</select>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="card" id="localisation">
+					<div class="card-header">
+						Localisation
+					</div>
+					<div class="card-body">
+						{% set location = project.projectParent.localisation %}
+						<div class="form-row">
+							<div class="form-group col-md-4">
+								<label>Pays</label>
+								<input type="text" disabled class="form-control" aria-describedby="emailHelp" placeholder="" value="{{ location.country }}">
+							</div>
+
+							<div class="form-group col-md-4">
+								<label>Région</label>
+								<input type="text" disabled class="form-control" aria-describedby="emailHelp" placeholder="" value="{{ location.region }}">
+							</div>
+
+							<div class="form-group col-md-4">
+								<label>Ville</label>
+								<input type="text" class="form-control" name="city" aria-describedby="emailHelp" placeholder="" value="{{ parcel.city }}">
+							</div>
+						</div>
+
+						<div class="form-row">
+							<div class="form-group col-md-6">
+								<label>Latitude
+									<span class="text-danger">*</span>
+								</label>
+								<input type="text" class="form-control" name="latitude" aria-describedby="emailHelp" placeholder="" value="{{ parcel.latitude }}" required>
+							</div>
+							<div class="form-group col-md-6">
+								<label>Longitude
+									<span class="text-danger">*</span>
+								</label>
+								<input type="text" class="form-control" name="longitude" aria-describedby="emailHelp" placeholder="" value="{{ parcel.longitude }}" required>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label>Délimitation parcelle</label>
+							<div id="delimitation-message" style="display: none;" class="mt-2">
+								<div class="form-group">
+									<strong class="mb-2">Une délimitation existe déjà.</strong>
+								</div>
+								<div class="form-group">
+									<a href="javascript:void(0)" id="editBoundaryBtn" class="d-block" title="Modifier la délimitation">
+										<i class="fa fa-edit"></i>
+										Modifier la délimitation ?
+									</a>
+								</div>
+							</div>
+							<div id="custom-file-upload" class="custom-file">
+								<input type="file" class="custom-file-input" id="customBoundaryFile" name="boundaryFile">
+								<label class="custom-file-label" for="customBoundaryFile">Choisissez un fichier</label>
+							</div>
+							<small>Document GPX ou KML
+							</small>
+							<label id="boundary-error" class="error" for="customBoundaryFile" style="display: none;">
+								Veuillez sélectionner un fichier au format KML ou GPX.
+							</label>
+						</div>
+					</div>
+				</div>
+				<input type="hidden" name="projectId" value="{{ project.id }}">
+				<div class="modal-footer">
+					<button type="submit" class="btn btn-primary">Enregistrer</button>
+				</div>
+			</form>
+
+			<div class="card" id="imagedrone">
+				<div class="card-header">
+					Importation image drone
+				</div>
+				<div class="card-body">
+					<div class="group-upload">
+						<label>Image de drône de la parcelle</label>
+						<div class="boxBanner">
+							<span class="ico-close text-white">+</span>
+							<img class="boxBanner_img" {% if not parcel.tiffImage %} style="display: none;" {% endif %} src="{{ parcel.tiffImage }}" alt="Drone">
+						</div>
+						<div class="form-row group-file" style="display: {% if not parcel.tiffImage %} block {% else %} none {% endif %};">
+							<div class="form-group col-md-9">
+								<div class="custom-file">
+									<input type="file" class="custom-file-input" id="customFileTIFF" name="droneImage">
+									<label class="custom-file-label" for="customFileTIFF">Choisissez un fichier</label>
+								</div>
+								<small>Format TIFF</small>
+								<label id="tiff-error" class="error" for="customFileTIFF" style="display: none">
+									Veuillez sélectionner un fichier au format TIFF.
+								</label>
+							</div>
+							<div class="form-group col-md-3">
+								<a href="javascript:void(0)" id="submitImageDrone" class="btn btn-primary text-white"
+								   data-url="{{ path('insert_image_drone_parcel', {'parcelId': parcel.id}) }}">
+									Importer
+								</a>
+							</div>
+						</div>
+					</div>
+					<div id="progress" class="progress mt-3" style="display: none;">
+						<div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%;"></div>
+					</div>
+				</div>
+			</div>
+
+			<div class="card" id="trees">
+				<div class="card-header">
+					Gestion des arbres
+				</div>
+				<div class="card-body">
+					<form id="id-generate-trees" method="POST" enctype="multipart/form-data" novalidate>
+						<div class="form-group">
+							<label>Espèces d'arbre et nombre d'arbre dans la parcelle</label>
+							<input type="hidden" name="parcelId" value="{{ parcel.id }}">
+							<input type="hidden" id="treesDataInput" name="treesData">
+							<div id="editTreeSpecies">
+								<table class="table table-bordered table-striped table-100 table-repeatable" id="treeSpeciesTable">
+									<thead>
+										<tr>
+											<th>Espece d'arbre</th>
+											<th width="20%">Nombre d'arbre</th>
+										</tr>
+									</thead>
+									<tbody>
+										{% for parcelTree in parcelTreeSpecies %}
+											<tr>
+												<td>
+													<select class="form-control select2-example tree-species" name="treeSpecies[]">
+														<option value="" data-species-name="">Séléctionner</option>
+														{% for tree in treeSpecies %}
+															<option value="{{ tree.id }}" data-species-name="{{ tree.commonName }}" {{ parcelTree.treeSpecies.id == tree.id ? 'selected' : '' }}>
+																{{ tree.commonName }}
+															</option>
+														{% endfor %}
+													</select>
+												</td>
+												<td>
+													<input name="treeNumber[]" type="number" min="1" class="form-control w-75 float-left mr-4 tree-number" value="{{ parcelTree.treeNumber }}">
+												</td>
+												<td>
+													<a class="table-rep-trash-button" href="#" title="Supprimer la ligne">
+														<i class="fa fa-trash"></i>
+													</a>
+												</td>
+											</tr>
+										{% endfor %}
+
+										{# Ligne modèle cachée pour clonage #}
+										<tr class="clone" style="display: none;">
+											<td>
+												<select class="form-control select2-example tree-species" name="treeSpecies[]">
+													<option value="" data-species-name="">Séléctionner</option>
+													{% for tree in treeSpecies %}
+														<option value="{{ tree.id }}" data-species-name="{{ tree.commonName }}">{{ tree.commonName }}</option>
+													{% endfor %}
+												</select>
+											</td>
+											<td>
+												<input name="treeNumber[]" type="number" min="1" class="form-control w-75 float-left mr-4 tree-number" value="">
+											</td>
+											<td></td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+						<div class="form-group">
+							<label id="generate-trees-error" class="error d-none">
+								Veuillez remplir tous les champs !
+							</label>
+						</div>
+						<input type="hidden" name="_csrf_token" value="{{ csrf_token('admin') }}">
+						<a href="javascript:void(0)" id="submitTreeForm" class="btn btn-primary text-white">
+							Enregistrer et générer les arbres
+						</a>
+					</form>
+				</div>
+			</div>
+
+			<div class="card" id="galerie">
+				<div class="card-header">
+					Galerie
+					<a href="javascript:void(0)" data-toggle="modal" data-target="#editGalerieModal" class="btn btn-primary text-white float-right" title="Ajouter un élément">Ajouter</a>
+				</div>
+				<div class="card-body">
+					{% if galleries is not empty %}
+						<div class="gallery-container">
+							{% for gallery in galleries %}
+								<div class="drawings">
+									<div class="image-hover">
+										<img src="{{ gallery.thumbnailUrl }}" class="rounded" alt="image">
+										<div class="image-hover-body rounded">
+											<div>
+												<a href="{{ gallery.url }}" class="image-popup-gallery-item text-info" title="Visualiser">
+													<i class="ti-eye"></i>
+												</a>
+												<a href="javascript:void(0)" class="text-secondary ml-2" data-toggle="modal" data-target="#editGalerieModal" data-gallery-id="{{ gallery.id }}" data-gallery-caption="{{ gallery.caption }}" data-gallery-url="{{ gallery.url }}" data-gallery-format="{{ gallery.type }}" title="Modifier">
+													<i class="ti-pencil"></i>
+												</a>
+												<a href="javascript:void(0)" data-toggle="modal" data-target="#deleteModal" data-delete-id="{{ gallery.id }}" data-type="gallery" class="text-danger ml-2" title="Supprimer">
+													<i class="ti-trash"></i>
+												</a>
+											</div>
+										</div>
+									</div>
+									<h6 class="mb-1 mt-1">{{ gallery.caption }}</h6>
+								</div>
+							{% endfor %}
+						</div>
+					{% else %}
+						<p class="text-center">Il n'y a pas de donnée</p>
+					{% endif %}
+				</div>
+			</div>
+
+			<div class="card" id="storytelling">
+				<div class="card-header">
+					Story telling / Les moments forts
+					<a href="{{ path('story_telling_new', {'entityId': parcel.id, 'entityType': 'parcel'}) }}" class="btn btn-primary text-white float-right" title="Ajouter un élément">Ajouter</a>
+				</div>
+				<div class="card-body">
+					{% if storyTelling is not empty %}
+						<div class="row">
+							{% for story in storyTelling %}
+								<div class="col-xl-4 col-lg-6">
+									<div class="card">
+										<div class="card-header">
+											<img src="{{ story.bannerImage }}" class="w-100" alt="{{ story.title }}">
+										</div>
+										<div class="card-body">
+											<div class="d-flex align-items-center">
+												<h5 class="mb-0">
+													<a href="#" class="link-2">{{ story.title }}</a>
+												</h5>
+												<div class="dropdown ml-auto">
+													<a href="javascript:void(0)" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+														<i class="fa fa-ellipsis-v" aria-hidden="true"></i>
+													</a>
+													<div class="dropdown-menu dropdown-menu-right">
+														<a href="{{ path('story_telling_edit', {'entityId': parcel.id, 'entityType': 'parcel', 'id': story.id}) }}" class="dropdown-item">
+															<i class="ti-pencil"></i>
+															Modifier</a>
+														<a href="#" data-toggle="modal" data-target="#deleteModal" data-delete-id="{{ story.id }}" data-type="storytelling" class="dropdown-item text-danger">
+															<i class="ti-trash"></i>
+															Supprimer</a>
+													</div>
+												</div>
+											</div>
+
+											<p>{{ story.description }}</p>
+										</div>
+									</div>
+								</div>
+							{% endfor %}
+						</div>
+					{% else %}
+						<p class="text-center">Il n'y a pas de donnée</p>
+					{% endif %}
+				</div>
+			</div>
+
+		</div>
+	</div>
+	<div class="modal" tabindex="-1" role="dialog" id="editGalerieModal">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">Ajout/Modification galerie</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">×</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<form id="gallery-edit" method="post">
+						<div class="form-group">
+							<label>Titre de la photo</label>
+							<input type="text" class="form-control" name="caption" aria-describedby="emailHelp" placeholder="" required>
+						</div>
+
+						<div class="group-upload">
+							<label>Fichier image ou vidéo
+								<span class="text-danger">*</span>
+							</label>
+							<div class="boxBanner">
+								<span class="ico-close">+</span>
+								<img class="boxBanner_img" src="" alt="">
+							</div>
+							<div class="form-group group-file" style="display: none;">
+
+								<div class="custom-file">
+									<input type="file" class="custom-file-input" id="customFile" name="uploadFile">
+									<label class="custom-file-label" for="customFile">Choisissez un fichier</label>
+								</div>
+								<small>Formats acceptés : jpeg, jpg, png, mp4, webm, ogg<br>
+									Taille maximum image : 5 mo<br>
+									Taille maximum vidéo : 20 mo
+								</small>
+							</div>
+						</div>
+						<input type="hidden" name="gallery_id">
+						<button type="submit" class="btn btn-primary">Enregistrer</button>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="modal" tabindex="-1" role="dialog" id="deleteModal">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">Suppression</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">×</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<p>Voulez-vous supprimer cet élément ? Cet action est irreversible.</p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+					<a href="#" id="confirmDelete" type="button" class="btn btn-primary">Supprimer</a>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+ <script>
+        var url_generate_tree = '{{ path('generate_tree_parcel') }}';
+    </script>
+	 <script src="{{ asset('admin/vendors/lightbox/jquery.magnific-popup.min.js') }}"></script>
+	 <script src="{{ asset('admin/vendors/fixto/fixto.js') }}"></script>
+	 <script src="{{ asset('admin/assets/js/anchor.js') }}"></script>
+	 <script src="{{ asset('admin/assets/js/table-repeater.js') }}"></script>
+	 <script src="{{ asset('admin/assets/js/js_backoffice/parcels.js') }}"></script>
+	 <script src="{{ asset('admin/assets/js/js_backoffice/parcel-extensions.js') }}"></script>
+	 <script src="{{ asset('admin/assets/js/js_backoffice/generate-trees.js') }}"></script>
+
+	 <script>
+	        $('#editGalerieModal').on('show.bs.modal', function (event) {
+	            var button = $(event.relatedTarget); // Button that triggered the modal
+	            var galleryId = button.data('gallery-id');
+	            var galleryCaption = button.data('gallery-caption');
+	            var galleryFormat = button.data('gallery-format');
+	            var galleryImage = button.data('gallery-url');
+
+	            var modal = $(this);
+	            if (galleryId) {
+	                modal.find('form').attr('action', '{{ path('gallery_edit', {'entityId': parcel.id, 'entityType': 'parcel', 'id': 'GALLERY_ID'}) }}'.replace('GALLERY_ID', galleryId));
+					modal.find('input[name="gallery_id"]').val(galleryId);
+	            } else {
+	                modal.find('form').attr('action', '{{ path('gallery_new', {'entityId': parcel.id, 'entityType': 'parcel'}) }}');
+	            }
+	            modal.find('form').attr('method', 'POST'); // Ensure the method is POST
+	            modal.find('input[name="caption"]').val(galleryCaption);
+	            modal.find('select[name="format"]').val(galleryFormat);
+
+	            if (galleryImage) {
+	                modal.find('.boxBanner_img').attr('src', galleryImage);
+	                modal.find('.group-file').hide();
+	                modal.find('.boxBanner').show();
+	            } else {
+	                modal.find('.boxBanner').hide();
+	                modal.find('.group-file').show();
+	            }
+
+	            // Clear the file input
+	            //modal.find('input[name="file"]').val('');
+	        });
+
+	        $('#deleteModal').on('show.bs.modal', function (event) {
+	            let deleteUrl = '';
+	            var button = $(event.relatedTarget); // Button that triggered the modal
+	            var deleteId = button.data('delete-id'); // Extract info from data-* attributes
+	            var type = button.data('type'); // Extract info from data-* attributes
+	            switch (type) {
+	                case 'storytelling':
+	                    deleteUrl = '{{ path('story_telling_delete', {'entityId': parcel.id, 'entityType': 'parcel', 'id': 'STORY_TELLING_ID'}) }}';
+	                    deleteUrl = deleteUrl.replace('STORY_TELLING_ID', deleteId); // Replace placeholder with actual ID
+	                    break;
+	                case'gallery':
+	                    deleteUrl = '{{ path('gallery_delete',{'entityId': parcel.id,'entityType':'parcel','id':'GALLERY_ID'}) }}';
+	                    deleteUrl = deleteUrl.replace('GALLERY_ID', deleteId);//ReplaceplaceholderwithactualID
+	                    break;
+
+	                default:
+	                    break;
+	            }
+	            var modal = $(this);
+	            modal.find('#confirmDelete').data('delete-url', deleteUrl);  // Update the href attribute
+	        });
+
+	        document.addEventListener("DOMContentLoaded", function () {
+	            const parcelDelimitation = "{{ parcel.delimitation|default('') }}";
+	            const customFileUpload = document.getElementById("custom-file-upload");
+	            const delimitationMessage = document.getElementById("delimitation-message");
+	            const editBoundaryBtn = document.getElementById("editBoundaryBtn");
+
+	            if (parcelDelimitation.trim() !== "") {
+	                // Si une délimitation existe, afficher le message et cacher l'input
+	                customFileUpload.style.display = "none";
+	                delimitationMessage.style.display = "block";
+	            }
+
+	            // Événement pour afficher à nouveau le champ d'upload
+	            editBoundaryBtn.addEventListener("click", function () {
+	                customFileUpload.style.display = "block"; // Affiche le champ d'upload
+	                //delimitationMessage.style.display = "none"; // Cache le message et le bouton
+	            });
+	        });
+
+			document.addEventListener("DOMContentLoaded", function () {
+				const submitButton = document.getElementById("submitImageDrone");
+				const fileInput = document.getElementById("customFileTIFF");
+				const tiffError = document.getElementById("tiff-error");
+
+				const progressContainer = document.getElementById("progress");
+				const progressBar = progressContainer.querySelector(".progress-bar");
+
+				// Add margin-bottom to the progress bar container
+				progressContainer.style.marginBottom = "15px";
+
+				submitButton.addEventListener("click", function () {
+					const file = fileInput.files[0];
+					const url = submitButton.getAttribute("data-url");
+
+					// Check if the file is a TIFF
+					if (!file || (file.type !== "image/tiff" && file.name.split('.').pop().toLowerCase() !== "tiff")) {
+						tiffError.style.display = "block";
+						return;
+					}
+					tiffError.style.display = "none";
+
+					const formData = new FormData();
+					formData.append("droneImage", file);
+
+					// Disable the button and show the progress bar
+					submitButton.disabled = true;
+					progressContainer.style.display = "block";
+					progressBar.style.width = "0%";
+					progressBar.textContent = "En progression";
+					progressBar.classList.remove("bg-success", "bg-danger");
+
+					$.ajax({
+						url: url,
+						method: "POST",
+						data: formData,
+						processData: false,
+						contentType: false,
+						xhr: function () {
+							const xhr = new window.XMLHttpRequest();
+							xhr.upload.addEventListener("progress", function (e) {
+								if (e.lengthComputable) {
+									const percentComplete = Math.round((e.loaded / e.total) * 100);
+									progressBar.style.width = percentComplete + "%";
+								}
+							});
+							return xhr;
+						},
+						success: function (response) {
+							if (response.success) {
+								// Set progress to 100% on success
+								progressBar.style.width = "100%";
+								progressBar.textContent = "100%";
+								progressBar.classList.add("bg-success");
+								toastr.success(response.message || "Image importée avec succès !");
+								setTimeout(() => {
+									location.reload(); // Reload the page to reflect changes
+								}, 2200);
+							} else {
+								// Stop progress at 90% on failure
+								progressBar.style.width = "90%";
+								progressBar.textContent = "90%";
+								progressBar.classList.add("bg-danger");
+								toastr.error(response.message || "Une erreur s'est produite.");
+							}
+						},
+						error: function (xhr) {
+							// Stop progress at 90% on error
+							progressBar.style.width = "90%";
+							progressBar.textContent = "90%";
+							progressBar.classList.add("bg-danger");
+							toastr.error(`Erreur serveur. Statut : ${xhr.status || "unknown"}`);
+						},
+						complete: function () {
+							submitButton.disabled = false; // Re-enable the button
+						}
+					});
+				});
+			});
+	 </script>
+{% endblock %}

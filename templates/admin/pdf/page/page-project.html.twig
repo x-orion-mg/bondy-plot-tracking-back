@@ -1,0 +1,33 @@
+<div class="page page-3">
+	<img class="background" src="{{ images['background'] }}" alt="image">
+
+	<img class="mini-logo" src="{{ images[0] }}" alt="mini-logo">
+
+
+	<div class="text">
+
+		<h3>{{ projectChild.projectParent.projectType.label }}
+			,
+			{{ projectChild.projectParent.localisation.region }}</h3>
+
+		<div class="para">
+			<h4>Context</h4>
+
+			<div class="rte">
+				{{ projectChild.history|raw }}
+			</div>
+		</div>
+
+		<div class="para">
+			<h4>Partnership
+			</h4>
+
+			<div class="rte">{{ projectChild.projectParent.history|raw }}</div>
+
+		</div>
+	</div>
+
+
+	{% set region_key = projectChild.projectParent.localisation.region|lower|replace({"'": "-", " ": "-"}) %}
+	<img class="femme" src="{{imageRegions[region_key] is defined ? imageRegions[region_key] : imageRegions['default'] }}" alt="{{ projectChild.projectParent.localisation.region }}">
+</div>

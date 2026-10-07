@@ -1,0 +1,19 @@
+{% set current_user = app.user %}
+<div class="sidebar-group">
+    <!-- BEGIN: User Menu -->
+    <div class="sidebar" id="user-menu">
+        <div class="py-4 text-center">
+            <h5 class="d-flex align-items-center justify-content-center">{{ current_user.firstName ~' '~ current_user.lastName }}</h5>
+        </div>
+        <div class="card mb-0 card-body shadow-none">
+            <div class="mb-4">
+                <div class="list-group list-group-flush">
+                    <a href="#" class="list-group-item p-l-r-0">Mon profile</a>
+                    <a href="{{ path('logout') }}" class="list-group-item p-l-r-0 text-danger">Déconnexion</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END: User Menu -->
+
+</div>

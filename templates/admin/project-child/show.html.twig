@@ -1,0 +1,424 @@
+{% extends 'base.html.twig' %}
+
+{% set menu_partner = true %}
+{% set menu_manage_prj_partner = true %}
+
+{% set country = project and project.projectParent and project.projectParent.localisation ? project.projectParent.localisation.country : 'Madagascar' %}
+{% set region  = project and project.projectParent and project.projectParent.localisation ? project.projectParent.localisation.region : 'Analamanga' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('admin/vendors/lightbox/magnific-popup.css') }}" type="text/css">
+{% endblock %}
+
+{% block body %}
+    <div class="page-header justify-content-between">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href={{ path('admin_dashboard') }}>Accueil</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{{ path('project_child_index') }}">Gestion des partenaires</a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">Visualisation projet partenaire</li>
+            </ol>
+        </nav>
+        <div>
+            <a href="{{ path('project_child_edit', {id: project.id}) }}" class="btn btn-primary text-white">Modifier le
+                projet</a>
+            <a href="{{ path('project_child_index') }}" class="btn btn-outline-primary" title="List">Retour</a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card">
+                <div class="app-sidebar-menu">
+                    <div class="list-group list-group-flush">
+                        <a href="#infoge" class="list-group-item active d-flex align-items-center">
+                            <i data-feather="globe" class="mr-2 width-15 height-15"></i>
+                            Informations générales
+                        </a>
+                        <a href="#localisation" class="list-group-item d-flex align-items-center">
+                            <i data-feather="map-pin" class="mr-2 width-15 height-15"></i>
+                            Localisation
+                        </a>
+                        <a href="#history" class="list-group-item d-flex align-items-center">
+                            <i data-feather="book" class="mr-2 width-15 height-15"></i>
+                            Histoire du projet
+                        </a>
+                        <a href="#chiffrecles" class="list-group-item d-flex align-items-center">
+                            <i data-feather="bar-chart-2" class="mr-2 width-15 height-15"></i>
+                            Chiffres clés
+                        </a>
+                        <a href="#parcelles" class="list-group-item d-flex align-items-center">
+                            <i data-feather="hexagon" class="mr-2 width-15 height-15"></i>
+                            Parcelles
+                        </a>
+                        <a href="#galerie" class="list-group-item d-flex align-items-center">
+                            <i data-feather="image" class="mr-2 width-15 height-15"></i>
+                            Galerie
+                        </a>
+                        <a href="#storytelling" class="list-group-item d-flex align-items-center">
+                            <i data-feather="film" class="mr-2 width-15 height-15"></i>
+                            Storytelling / Les moments forts
+                        </a>
+                        <a href="#sous-projets" class="list-group-item d-flex align-items-center">
+                            <i data-feather="folder-plus" class="mr-2 width-15 height-15"></i>
+                            Sous-projets / Projets locaux
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="card" id="infoge">
+                <div class="card-header">
+                    Informations générales
+                </div>
+                <div class="card-body">
+                    <form>
+                        <div class="form-group">
+                            <p><strong>Projet bondy associé</strong>
+                                : {{ project.projectParent.title ?? project.projectParent.projectType.label }}</p>
+                        </div>
+                        <div class="form-group">
+                            <p><strong>Partenaire</strong>
+                                : {{ project.user.lastName }}</p>
+                        </div>
+                        <div class="form-group">
+                            <strong>Bannière image :</strong>
+                            <img src="{{ project.bannerImage ?? asset('admin/assets/media/image/image1.jpg') }}"
+                                 class="d-block" alt="" style="height: 300px; object-fit: contain;">
+                        </div>
+
+                        <div class="form-group">
+                            <p><strong>Date de début</strong> : {{ project.startDate|date('F Y') }}</p>
+                        </div>
+
+                        <div class="form-group">
+                            <p><strong>Etape du projet</strong> : {{ project.projectStep.projectStepName }}</p>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+
+            <div class="card" id="localisation">
+                <div class="card-header">
+                    Localisation
+                </div>
+                <div class="card-body">
+                    <form>
+                        <div class="form-group">
+                            <p><strong>Pays</strong> : {{ project.projectParent.localisation.country }}</p>
+                        </div>
+
+                        <div class="form-group">
+                            <p><strong>Région</strong> : {{ project.projectParent.localisation.region }}</p>
+                        </div>
+
+                        <div class="form-group">
+                            <p><strong>Ville</strong> : {{ project.city }}</p>
+                        </div>
+
+
+                    </form>
+                </div>
+            </div>
+
+            <div class="card" id="history">
+                <div class="card-header">
+                    Histoire du projet
+                </div>
+                <div class="card-body">
+                    <form>
+                        <div class="form-group">
+                            {{ project.history|raw }}
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card" id="chiffrecles">
+                <div class="card-header">
+                    Chiffres clés
+                </div>
+                <div class="card-body">
+                    <ul class="nav nav-tabs mb-3" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="home-tab" data-toggle="tab" href="#impact-environnemental"
+                               role="tab"
+                               aria-controls="home" aria-selected="true">Impact environnemental</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="profile-tab" data-toggle="tab" href="#impact-social" role="tab"
+                               aria-controls="profile" aria-selected="false">Impact Social</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="contact-tab" data-toggle="tab" href="#impact-economique" role="tab"
+                               aria-controls="contact" aria-selected="false">Impact Economique</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane fade show active" id="impact-environnemental" role="tabpanel"
+                             aria-labelledby="home-tab">
+                            <div class="form-group">
+                                <p><strong>Arbres plantés</strong> : {{ project.environmentalImpactPlantedTrees }}</p>
+                            </div>
+
+                            <div class="form-group">
+                                <p><strong>TCO2 séquestrés</strong> : {{ project.environmentalImpactCO2 }}</p>
+                            </div>
+
+                        </div>
+                        <div class="tab-pane fade" id="impact-social" role="tabpanel" aria-labelledby="profile-tab">
+                            <div class="form-group">
+                                <p><strong>Emplois saisonniers</strong> : {{ project.socialImpactSeasonalJobs }}</p>
+                            </div>
+
+                            <div class="form-group">
+                                <p><strong>Bénéficiaire indirect</strong>
+                                    : {{ project.socialImpactIndirectBeneficiaries }}</p>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="impact-economique" role="tabpanel" aria-labelledby="contact-tab">
+                            <div class="form-group">
+                                <p><strong>Emplois durable</strong> : {{ project.economicImpactSustainableEmployment }}
+                                </p>
+                            </div>
+
+                            <div class="form-group">
+                                <p><strong>Hectares restaurés</strong> : {{ project.economicImpactRestoredHectares }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" id="parcelles">
+                <div class="card-header">
+                    Parcelles
+                </div>
+                <div class="card-body">
+                    {% if parcels is not empty %}
+                        <div class="table-responsive">
+                            <table id="myTable" class="table table-striped table-bordered">
+                                <thead>
+                                <tr>
+                                    <th>Nom de la parcelle</th>
+                                    <th>Nombre d'arbres total</th>
+                                    <th>Arbres disponibles</th>
+                                    <th>Espèce d'arbres</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                    {% for parcel in parcels %}
+                                        <tr>
+                                            <td>{{ parcel.parcelTitle }}</td>
+                                            <td>{{ parcel.totalTreeNumber ?? 0 }}</td>
+                                            <td>{{ parcel.totalAvailableTreeNumber ?? 0 }}</td>
+                                            <td>{{ parcel.treeSpeciesNames ?? '-'}}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <p class="text-center">Aucune parcelle pour ce projet.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="card" id="galerie">
+                <div class="card-header">
+                    Galerie
+                </div>
+                <div class="card-body">
+                    {% if galleries is not empty %}
+                        <div class="gallery-container">
+                        {% for gallery in galleries %}
+                            <div class="drawings">
+                                <a href="{{ gallery.url }}"
+                                class="image-popup-gallery-item">
+                                    <div class="image-hover">
+                                        <img src="{{ gallery.thumbnailUrl }}" class="rounded" alt="{{ gallery.caption }}">
+                                    </div>
+                                    <h6 class="mb-1 mt-1">{{ gallery.caption }}</h6>
+                                </a>
+                            </div>
+                        {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-center">Il n'y a pas de donnée</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="card" id="storytelling">
+                <div class="card-header">
+                    Storytelling / Les moments forts
+                </div>
+                <div class="card-body">
+                    {% if storyTelling is not empty %}
+                        <div class="row">
+                            {% for story in storyTelling %}
+                                <div class="col-xl-4 col-lg-6">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <img src="{{ story.bannerImage }}"
+                                                 class="w-100"
+                                                 alt="{{ story.title }}">
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="d-flex align-items-center">
+                                                <h5 class="mb-0">
+                                                    <a href="#" class="link-2">{{ story.title }}</a>
+                                                </h5>
+
+                                            </div>
+
+                                            <p>{{ story.description }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-center">Il n'y a pas de donnée</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="card" id="sous-projets">
+                <div class="card-header">
+                    Sous-projets / Projets locaux
+                </div>
+                <div class="card-body">
+                    {% if subProjects is not empty %}
+                        <div class="row">
+                            {% for subProject in subProjects %}
+                                <div class="col-xl-4 col-lg-6">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <img src="{{ subProject.banner }}" class="w-100"
+                                                 alt="{{ subProject.name }}">
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="d-flex align-items-center">
+                                                <h5 class="mb-0">
+                                                    <a href="#" class="link-2">{{ subProject.name }}</a>
+                                                </h5>
+                                            </div>
+                                            <div class="text-muted small mt-1 mb-3"><i data-feather="map-pin"
+                                                                                       class="mr-2 width-15 height-15"></i>
+                                                {{ country }}
+                                                , {{ region }}
+                                                , {{ subProject.city }}
+                                            </div>
+                                            <p>{{ subProject.historyExcerpt }}.</p>
+                                            {% if subProject.startDate and subProject.startDate|date('Y') > 0 %}
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <div class="text-muted mb-1 small"><i
+                                                                    class="fa fa-calendar"></i> Début
+                                                        </div>
+                                                        <div>{{ subProject.startDate|date('d/m/Y') }}</div>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+
+                        </div>
+                    {% else %}
+                        <p class="text-center">Il n'y a pas de donnée</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {#</div>#}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('admin/vendors/lightbox/jquery.magnific-popup.min.js') }}"></script>
+    <script src="{{ asset('admin/vendors/fixto/fixto.js') }}"></script>
+    <script src="{{ asset('admin/assets/js/anchor.js') }}"></script>
+    <script>
+        $(function () {
+            $(document).ready(function () {
+                $('.select2-example').select2({
+                    placeholder: 'Selectionner'
+                });
+
+                $('input.datepick').daterangepicker({
+                    singleDatePicker: true,
+                    showDropdowns: true,
+                    locale: {
+                        format: 'DD/MM/YYYY', // Format français
+                        applyLabel: "Appliquer",
+                        cancelLabel: "Annuler",
+                        daysOfWeek: ["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"],
+                        monthNames: [
+                            "Janvier", "Février", "Mars", "Avril", "Mai", "Juin",
+                            "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"
+                        ],
+                        firstDay: 1 // Lundi comme premier jour de la semaine
+                    }
+                });
+
+                $('.app-sidebar-menu').fixTo('body', {
+                    zIndex: 1,
+                    top: 75
+                });
+
+                let magnificPopupGalleryConfig = {
+                    type: 'image',
+                    gallery: {
+                        enabled: true
+                    }
+                };
+                $('.image-popup-gallery-item').magnificPopup(magnificPopupGalleryConfig);
+
+                $('.app-sidebar-menu .list-group >a').on('click', function () {
+                    $('.app-sidebar-menu .list-group >a').removeClass('active');
+                    $(this).addClass('active');
+                });
+
+                $('#myTable').DataTable({
+                    pageLength: 4,
+                    responsive: true,
+                    autoWidth: false,
+                    language: {
+                        paginate: {
+                            next: '>',
+                            previous: '<'
+                        },
+                        search: 'Rechercher :',
+                        info: 'Affichage de _START_ à _END_ sur _TOTAL_ éléments',
+                        lengthMenu: 'Afficher _MENU_ éléments',
+                        emptyTable: 'Aucune donnée disponible',
+                        infoEmpty: 'Affichage de 0 à 0 sur 0 éléments',
+                        infoFiltered: '(filtré à partir de _MAX_ éléments au total)',
+                        loadingRecords: 'Chargement...',
+                        processing: 'Traitement...',
+                        zeroRecords: 'Aucun élément correspondant trouvé',
+                    },
+                    order: [],
+                    columnDefs: [
+                        {
+                            targets: 'no-sort',
+                            orderable: false,
+                        }
+                    ],
+                });
+            });
+        })
+    </script>
+{% endblock %}

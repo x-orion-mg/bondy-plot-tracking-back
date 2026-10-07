@@ -1,0 +1,10 @@
+GET {{site_url}}/api/v1/subprojects
+Content-Type: application/json
+
+### GET request child project by id
+GET {{site_url}}/api/v1/subproject/1
+Accept: application/json
+
+### DELETE request sub project by id
+GET {{site_url}}/admin/project-child/1/subprojects/17/edit
+Authorization: Basic admin@mail.com 123456789

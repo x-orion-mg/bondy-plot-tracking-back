@@ -1,0 +1,250 @@
+{% extends 'base.html.twig' %}
+
+{% set menu_partner = true %}
+{% set menu_manage_partner = true %}
+
+{% block body %}
+    <div class="page-header justify-content-between">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href={{ path('admin_dashboard') }}>Accueil</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{{ path('partner_index') }}">Gestion des partenaires</a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">Gestion de certificat & rapport</li>
+            </ol>
+        </nav>
+        <div>
+            <a href="{{ path('partner_index') }}" class="btn btn-outline-primary" title="List">Retour</a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+
+            <div class="row">
+                <div class="col-lg-12 col-md-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <h6 class="card-title">Gestion de certificat {{ user.lastName }}</h6>
+                            <form action="{{ path('user_generate_certificate_pdf', {'user': user.id}) }}"
+                                  id="generate-certificate-pdf" method="post">
+                                <button type="submit" class="btn btn-primary">Générer le certificat de reboisement
+                                </button>
+                            </form>
+                            {% if certificates is empty %}
+                                <br>
+                                <h5 class="card-title">Il n'y a pas encore de certification.</h5>
+                            {% else %}
+                                {% for certificate in certificates %}
+                                    <ul class="list-group list-group-flush">
+
+                                        <li class="list-group-item d-flex align-items-center pl-0 pr-0">
+                                            <div>
+                                                <figure class="avatar mr-3">
+                                                <span class="avatar-title bg-danger-bright text-danger rounded">
+                                                    <i class="fa fa-file-pdf-o"></i>
+                                                </span>
+                                                </figure>
+                                            </div>
+                                            <div>
+                                                <a href="{{ asset(certificate.filePath) }}" target="_blank">
+                                                    <h6 class="mb-0">{{ certificate.fileName }}</h6>
+                                                </a>
+                                                <small class="text-muted">{{ certificate.fileSizeMB }}</small><br>
+                                                <small class="text-muted">{{ certificate.createdAt|date('d M Y') }}</small>
+                                            </div>
+                                            <div class="ml-auto">
+                                                <a href="{{ asset(certificate.filePath) }}" download
+                                                   class="text-secondary"
+                                                   data-toggle="tooltip" title="Download">
+                                                    <i class="ti-download"></i>
+                                                </a>
+                                                <a href="javascript:void(0)"
+                                                   class="text-danger ml-2 delete-item"
+                                                   data-delete-id="{{ certificate.id }}"
+                                                   data-toggle="modal"
+                                                   data-type="certificate"
+                                                   data-target="#deleteModal"
+                                                   title="Delete">
+                                                    <i class="ti-trash"></i>
+                                                </a>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                {% endfor %}
+                            {% endif %}
+
+                            <div class="form-group">
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox"
+                                           class="custom-control-input user-option"
+                                           id="customCheck"
+                                           data-option="dashboard_certificate"
+                                           data-user-id="{{ user.id }}"
+                                           data-option-url="{{ path('user_option_update', {'user': user.id}) }}"
+                                           {% if user.getOptionValue('dashboard_certificate') %}checked{% endif %}>
+
+                                    <label class="custom-control-label" for="customCheck">
+                                        Afficher le certificat sur le tableau de bord du partenaire
+                                    </label>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body">
+                            <h6 class="card-title">
+                                Gestion de rapport {{ user.lastName }}
+                                <a href="{{ path('template_report_history', {'userId': user.id}) }}" target="_blank" class="text-info" data-toggle="tooltip" title="Visualiser"><!--i class="ti-eye"></i--></a>
+                            </h6>
+
+                            {# <div class="d-flex">
+                                <div class="form-group custom-control custom-checkbox kl-import-rapport col-md-2">
+                                    <input type="checkbox" class="custom-control-input" id="import-rapport">
+                                    <label class="custom-control-label">Importer un rapport ?</label>
+                                </div>
+                                <div class="form-group file-input-certificat col-md-6 d-none">
+                                    <label>Rapport :</label>
+                                    <div class="custom-file mb-2">
+                                        <input type="file" class="custom-file-input" id="customFile">
+                                        <label class="custom-file-label" for="customFile">Choisir le PDF</label>
+                                    </div>
+                                    <div>
+                                        <button type="button" class="btn btn-primary">Valider</button>
+                                    </div>
+                                </div>
+                            </div> #}
+
+                            <form action="{{ path('user_generate_report_pdf', {'user': user.id}) }}"
+                                  id="generate-report-pdf" method="post">
+                                <button type="submit" class="btn btn-primary kl-generate-rapport">Générer un nouveau
+                                    rapport
+                                </button>
+                            </form>
+                            {% if reportHistories is empty %}
+                                <br>
+                                <h5 class="card-title">Il n'y a pas encore de rapport.</h5>
+                            {% else %}
+                                {% for reportHistory in reportHistories %}
+                                    <ul class="list-group list-group-flush">
+
+                                        <li class="list-group-item d-flex align-items-center pl-0 pr-0">
+                                            <div>
+                                                <figure class="avatar mr-3">
+                                                <span class="avatar-title bg-danger-bright text-danger rounded">
+                                                    <i class="fa fa-file-pdf-o"></i>
+                                                </span>
+                                                </figure>
+                                            </div>
+                                            <div>
+                                                <a href="{{ asset(reportHistory.filePath) }}" target="_blank">
+                                                    <h6 class="mb-0">{{ reportHistory.fileName }}</h6>
+                                                </a>
+                                                <small class="text-muted">{{ reportHistory.fileSizeMB }}</small><br>
+                                                <small class="text-muted">{{ reportHistory.createdAt|date('d M Y') }}</small>
+                                            </div>
+                                            <div class="ml-auto">
+                                                <a href="{{ asset(reportHistory.filePath) }}" download
+                                                   class="text-secondary"
+                                                   data-toggle="tooltip" title="Download">
+                                                    <i class="ti-download"></i>
+                                                </a>
+                                                <a href="javascript:void(0)"
+                                                   class="text-danger ml-2 delete-item"
+                                                   data-delete-id="{{ reportHistory.id }}"
+                                                   data-toggle="modal"
+                                                   data-type="reportHistory"
+                                                   data-target="#deleteModal"
+                                                   title="Delete">
+                                                    <i class="ti-trash"></i>
+                                                </a>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                {% endfor %}
+                            {% endif %}
+
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body">
+                            <h6 class="card-title">Gestion des accès</h6>
+
+                            <div class="form-group">
+                                <label class="w-100">Code 4 chiffres
+                                    <input type="number" class="form-control user-option"
+                                           data-option="access_code"
+                                           data-user-id="{{ user.id }}"
+                                           data-option-url="{{ path('user_option_update', {'user': user.id}) }}"
+                                           placeholder="Entrez un code"
+                                           value="{{ user.getOptionValue('access_code') ?? '' }}">
+                                </label>
+                            </div>
+
+                            <button type="button" class="btn btn-primary save-option" data-option="access_code">
+                                Enregistrer
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+
+
+            </div>
+
+        </div>
+    </div>
+    <div class="modal" tabindex="-1" role="dialog" id="deleteModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Suppression</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Voulez-vous supprimer cet élément ? Cette action est irreversible.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                    <a href="#" id="confirmDelete" type="button" class="btn btn-primary">Supprimer</a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        $(document).ready(function () {
+            $('#deleteModal').on('show.bs.modal', function (event) {
+                let deleteUrl = '';
+                var button = $(event.relatedTarget); // Button that triggered the modal
+                var deleteId = button.data('delete-id'); // Extract info from data-* attributes
+                var type = button.data('type'); // Extract info from data-* attributes
+                switch (type) {
+                    case 'certificate':
+                        deleteUrl = '{{ path('delete_certificate', {'user': user.id, 'id': 'CERTIFICATE_ID'}) }}';
+                        deleteUrl = deleteUrl.replace('CERTIFICATE_ID', deleteId);
+                        break;
+                    case'reportHistory':
+                        deleteUrl = '{{ path('delete_report_history',{'user': user.id, 'id': 'RAPPORT_ID'}) }}';
+                        deleteUrl = deleteUrl.replace('RAPPORT_ID', deleteId);
+                        break;
+                    default:
+                        break;
+                }
+                var modal = $(this);
+                modal.find('#confirmDelete').attr('data-delete-url', deleteUrl);  // Update the href attribute
+            });
+        });
+    </script>
+{% endblock %}

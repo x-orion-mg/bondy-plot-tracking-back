@@ -1,0 +1,328 @@
+{% extends 'base.html.twig' %}
+
+{% set routes = {
+    'parcel': 'parcel_edit',
+    'project': 'project_child_edit',
+    'tree-species': 'tree_species_edit'
+} %}
+{% set routeName = routes[entityType] | default('project_child_edit') %}
+
+{% block body %}
+    <div class="page-header justify-content-between">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href={{ path('admin_dashboard') }}>Accueil</a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">Modification story telling</li>
+            </ol>
+        </nav>
+        <div>
+            <a href="{{ path(routeName,{'id':entityId}) }}" class="btn btn-outline-primary" title="List">Retour</a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card">
+                <div class="app-sidebar-menu">
+                    <div class="list-group list-group-flush">
+                        <a href="#infoge" class="list-group-item active d-flex align-items-center">
+                            <i data-feather="globe" class="mr-2 width-15 height-15"></i>
+                            Informations générales
+                        </a>
+                        <a href="#galerie" class="list-group-item d-flex align-items-center">
+                            <i data-feather="image" class="mr-2 width-15 height-15"></i>
+                            Galerie
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-md-9">
+
+            <div class="card" id="infoge">
+                <div class="card-header">
+                    Informations générales
+                </div>
+                <div class="card-body">
+                    <form id="story-telling-edit"
+                            action="{{ path('story_telling_edit', {'entityId': entityId, 'entityType':entityType, 'id':storyTelling.id}) }}"
+                            method="POST"
+                            enctype="multipart/form-data">
+                        <div class="form-group">
+                            <label class="w-100">Titre<span class="text-danger">*</span>
+                                <input type="text" class="form-control"
+                                       aria-describedby="emailHelp" placeholder="" value="{{ storyTelling.title }}"
+                                       name="title" required>
+                            </label>
+                        </div>
+
+                        <div class="group-upload">
+                            <label for="story-telling-upload-file">Bannière image <span class="text-danger">*</span></label>
+                            <div class="boxBanner">
+                                <span class="ico-close">+</span>
+                                <img class="boxBanner_img" src="{{ storyTelling.bannerImage }}"
+                                     alt="{{ storyTelling.title }}">
+                            </div>
+                            <div class="form-group group-file" style="display: none;">
+
+                                <div class="custom-file">
+                                    <input id="story-telling-upload-file" type="file" class="custom-file-input" name="uploadFile">
+                                    <label class="custom-file-label" for="customFile">Choisissez un fichier</label>
+                                </div>
+                                <small>Dimension 707x205px</small>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="w-100">Extrait
+                                <textarea name="description"
+                                          class="form-control" maxlength="300">{{ storyTelling.description|slice(0, 300) }}</textarea>
+                            </label>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="w-100">Contenu<span class="text-danger">*</span>
+                            <textarea name="content"
+                                      class="form-control summernote-editor">{{ storyTelling.content }}</textarea>
+                            </label>
+                        </div>
+
+
+                        <button type="submit" class="btn btn-primary float-right">Enregistrer</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card" id="galerie">
+                <div class="card-header">
+                    Galerie
+                    <a href="javascript:void(0)" data-toggle="modal" data-target="#editGalerieModal"
+                       class="btn btn-primary text-white float-right" title="Ajouter un élément">Ajouter</a>
+                </div>
+                <div class="card-body">
+                    {% if galleries is not empty %}
+                        <div class="gallery-container">
+                            {% for gallery in galleries %}
+                                <div class="drawings">
+                                    <div class="image-hover">
+                                        <img src="{{ gallery.thumbnailUrl }}" class="rounded" alt="{{ gallery.caption }}">
+                                        <div class="image-hover-body rounded">
+                                            <div>
+                                                <a href="{{ gallery.url }}"
+                                                   class="image-popup-gallery-item text-info" title="Visualiser">
+                                                    <i class="ti-eye"></i>
+                                                </a>
+                                                <a href="javascript:void(0)"
+                                                   class="text-secondary ml-2"
+                                                   data-toggle="modal"
+                                                   data-target="#editGalerieModal"
+                                                   data-gallery-id="{{ gallery.id }}"
+                                                   data-gallery-caption="{{ gallery.caption }}"
+                                                   data-gallery-url="{{ gallery.url }}"
+                                                   data-gallery-format="{{ gallery.type }}"
+                                                   title="Modifier">
+                                                    <i class="ti-pencil"></i>
+                                                </a>
+                                                <a href="javascript:void(0)"
+                                                   data-toggle="modal"
+                                                   data-target="#deleteModal"
+                                                   data-delete-id="{{ gallery.id }}"
+                                                   data-type="gallery"
+                                                   class="text-danger ml-2"
+                                                   title="Supprimer"
+                                                >
+                                                    <i class="ti-trash"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <h6 class="mb-1 mt-1">{{ gallery.caption }}</h6>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-center">Il n'y a pas de donnée</p>
+                    {% endif %}
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="modal" tabindex="-1" role="dialog" id="editGalerieModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Ajout / Modification galerie</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="gallery-edit" method="post">
+                        <div class="form-group">
+                            <label class="w-100">Titre de la photo <span class="text-danger">*</span>
+                                <input type="text" class="form-control" name="caption"
+                                       aria-describedby="emailHelp" placeholder="" required>
+                            </label>
+                        </div>
+
+                        <div class="group-upload">
+                            <label for="galerie-upload">Fichier image ou vidéo <span class="text-danger">*</span></label>
+                            <div class="boxBanner">
+                                <span class="ico-close">+</span>
+                                <img class="boxBanner_img" src="" alt="">
+                            </div>
+                            <div class="form-group group-file" style="display: none;">
+
+                                <div class="custom-file">
+                                    <input  type="file" class="custom-file-input" id="galerie-upload" name="uploadFile">
+                                    <label class="custom-file-label" for="customFile">Choisissez un fichier</label>
+                                </div>
+                                <small>Formats acceptés : jpeg, jpg, png, mp4, webm, ogg<br>
+                                    Taille maximum image : 5 mo<br>
+                                    Taille maximum vidéo : 20 mo
+                                </small>
+                            </div>
+                        </div>
+                        <input type="hidden" name="gallery_id">
+                        <button type="submit" class="btn btn-primary">Enregistrer</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" tabindex="-1" role="dialog" id="deleteModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Suppression</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Voulez-vous supprimer cet élément ? Cette action est irreversible.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                    <a href="#" id="confirmDelete" type="button" class="btn btn-primary">Supprimer</a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('admin/vendors/lightbox/jquery.magnific-popup.min.js') }}"></script>
+    <script src="{{ asset('admin/vendors/fixto/fixto.js') }}"></script>
+    <script src="{{ asset('admin/assets/js/anchor.js') }}"></script>
+    <script src="{{ asset('admin/vendors/summernote/summernote-bs4.min.js') }}"></script>
+
+
+    <script>
+        $(function () {
+            $(document).ready(function () {
+                $('.select2-example').select2({
+                    placeholder: 'Selectionner'
+                });
+
+
+                $('.summernote-editor').summernote({
+                    placeholder: 'Contenu...',
+                    tabsize: 2,
+                    height: 100,
+                });
+
+
+                $('input.datepick').daterangepicker({
+                    singleDatePicker: true,
+                    showDropdowns: true,
+                    locale: {
+                        format: 'DD/MM/YYYY', // Format français
+                        applyLabel: "Appliquer",
+                        cancelLabel: "Annuler",
+                        daysOfWeek: ["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"],
+                        monthNames: [
+                            "Janvier", "Février", "Mars", "Avril", "Mai", "Juin",
+                            "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"
+                        ],
+                        firstDay: 1 // Lundi comme premier jour de la semaine
+                    }
+                });
+
+                $('.app-sidebar-menu').fixTo('body', {
+                    zIndex: 1,
+                    top: 75
+                });
+
+                let magnificPopupGalleryConfig = {
+                    type: 'image',
+                    gallery: {
+                        enabled: true
+                    }
+                };
+
+                $('.image-popup-gallery-item').magnificPopup(magnificPopupGalleryConfig);
+
+                $('.app-sidebar-menu .list-group >a').on('click', function () {
+                    $('.app-sidebar-menu .list-group >a').removeClass('active');
+                    $(this).addClass('active');
+                })
+
+            });
+        })
+
+        $('#editGalerieModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget); // Button that triggered the modal
+            var galleryId = button.data('gallery-id');
+            var galleryCaption = button.data('gallery-caption');
+            var galleryFormat = button.data('gallery-format');
+            var galleryImage = button.data('gallery-url');
+
+            var modal = $(this);
+            if (galleryId) {
+                modal.find('form').attr('action', '{{ path('gallery_edit', {'entityId': storyTelling.id, 'entityType': 'story-telling', 'id': 'GALLERY_ID'}) }}'.replace('GALLERY_ID', galleryId));
+                modal.find('input[name="gallery_id"]').val(galleryId);
+            } else {
+                modal.find('form').attr('action', '{{ path('gallery_new', {'entityId': storyTelling.id, 'entityType': 'story-telling'}) }}');
+            }
+            modal.find('form').attr('method', 'POST'); // Ensure the method is POST
+            modal.find('input[name="caption"]').val(galleryCaption);
+            modal.find('select[name="format"]').val(galleryFormat);
+
+            if (galleryImage) {
+                modal.find('.boxBanner_img').attr('src', galleryImage);
+                modal.find('.group-file').hide();
+                modal.find('.boxBanner').show();
+            } else {
+                modal.find('.boxBanner').hide();
+                modal.find('.group-file').show();
+            }
+        });
+
+        $('#deleteModal').on('show.bs.modal', function (event) {
+            let deleteUrl = '';
+            var button = $(event.relatedTarget); // Button that triggered the modal
+            var deleteId = button.data('delete-id'); // Extract info from data-* attributes
+            var type = button.data('type'); // Extract info from data-* attributes
+            switch (type) {
+
+                case'gallery':
+                    deleteUrl = '{{ path('gallery_delete',{'entityId': storyTelling.id,'entityType':entityType,'id':'GALLERY_ID'}) }}';
+                    deleteUrl = deleteUrl.replace('GALLERY_ID', deleteId);//ReplaceplaceholderwithactualID
+                    break;
+
+                default:
+                    break;
+            }
+            var modal = $(this);
+            modal.find('#confirmDelete').data('delete-url', deleteUrl);  // Update the href attribute
+        });
+
+    </script>
+{% endblock %}

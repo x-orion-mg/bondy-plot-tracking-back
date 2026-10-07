@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Certification Franklin</title>
+	</head>
+
+	<style>
+		*,
+		*::before,
+		*::after {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
+
+		@font-face {
+			font-family: "DMSans";
+			font-weight: 700;
+			src: url("{{ absolute_url(asset('admin/fonts/DMSans-Bold.woff2')) }}") format("woff2");
+		}
+
+		@font-face {
+			font-family: "DMSans";
+			font-weight: 400;
+			src: url("{{ absolute_url(asset('admin/fonts/DMSans-Regular.woff2')) }}") format("woff2");
+		}
+
+
+		*,
+		*::before,
+		*::after {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
+
+		body {
+			font-family: "DMSans", sans-serif;
+			font-weight: 400;
+		}
+
+		.container {
+			background-color: #fff;
+			display: flex;
+			align-items: center;
+		}
+
+		.wrapper {
+			position: relative;
+		}
+
+
+		.page {
+			width: 1122px;
+			height: 793px;
+			position: relative;
+		}
+
+		.page .mini-logo {
+			position: absolute;
+			top: 0;
+			right: 50px;
+			width: 46px;
+			height: auto;
+			z-index: 1;
+		}
+
+		.page .top-logo {
+			position: absolute;
+			top: 0;
+			right: 120px;
+			width: 46px;
+			height: auto;
+			z-index: 1;
+		}
+
+		.page-1 .bg,
+		.page .background {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+		}
+
+		.page-1 .logo {
+			position: absolute;
+			top: 0;
+			right: 210px;
+			width: 132px;
+			height: 177px;
+			z-index: 1;
+			display: block;
+		}
+
+		.page-1 .logo img {
+			width: 100%;
+			height: 100%;
+			object-fit: contain;
+		}
+
+		.page-1 .title {
+			width: 395px;
+			height: auto;
+			position: absolute;
+			top: 312px;
+			right: 78px;
+			z-index: 1;
+		}
+
+		.page-1 .title_text {
+			position: absolute;
+			top: 389px;
+			right: 0;
+			font-size: 52px;
+			z-index: 1;
+			width: 460px;
+			font-weight: 400;
+			text-align: left;
+			letter-spacing: 1.5px;
+			word-spacing: -5px;
+			line-height: 50px;
+			color: #FEF0D4;
+		}
+
+		.page-1 .link {
+			position: absolute;
+			bottom: 41px;
+			right: 317px;
+			font-size: 19px;
+			font-weight: 400;
+			text-align: left;
+			color: #FEF0D4;
+			text-decoration: none;
+			z-index: 1;
+		}
+
+		.page-1 .logo_wrapper {
+			position: absolute;
+			height: 80px;
+			width: 400px;
+			z-index: 1;
+			bottom: 113px;
+			right: 78px;
+		}
+
+		.page-1 .logo_partner {
+			height: 100%;
+			width: auto;
+			object-fit: contain;
+			display: block;
+			position: absolute;
+			left: 50%;
+			top: 0;
+			transform: translateX(-50%);
+		}
+
+
+		.page-2 .ceo {
+			position: absolute;
+			bottom: 0;
+			left: -1px;
+			width: 487px;
+			height: 715px;
+			z-index: 1;
+			clip-path: polygon(0 4%, 100% 1%, 100% 100%, 0% 100%);
+		}
+
+		.page-2 .text_ceo {
+			position: absolute;
+			bottom: 0;
+			right: 50px;
+			width: 487px;
+			height: 715px;
+			z-index: 1;
+		}
+
+		.page-2 .text_ceo .title {
+			font-size: 39px;
+			color: #2F5933;
+			margin-top: 12px;
+			margin-bottom: 51px;
+			letter-spacing: -1px;
+		}
+
+		.page-2 .text_ceo p {
+			text-align: justify;
+			margin-bottom: 20px;
+			font-size: 14px;
+			color: #231F20;
+		}
+
+		.page-2 .text_ceo .ceo_name {
+			text-align: right;
+			font-size: 26px;
+			color: #2F5933;
+			margin-top: 45px;
+			margin-right: 24px;
+			letter-spacing: -1px;
+			font-weight: bold;
+		}
+
+
+		.page-3 .femme {
+			position: absolute;
+			bottom: 0;
+			right: 46px;
+			width: 487px;
+			height: 710px;
+			z-index: 1;
+			clip-path: polygon(0 4%, 100% 1%, 100% 100%, 0% 100%);
+		}
+
+		.page-3 .text {
+			position: absolute;
+			bottom: 0;
+			left: 46px;
+			width: 487px;
+			height: 743px;
+			z-index: 1;
+			letter-spacing: 1.2px;
+		}
+
+		.page-3 .text h2 {
+			font-size: 34px;
+			color: #2F5933;
+		}
+
+		.page-3 .text h3 {
+			font-size: 20px;
+			color: #2F5933;
+			margin-bottom: 40px;
+			letter-spacing: 1px;
+			line-height: 16px;
+		}
+
+
+		.page-3 .text .para {
+			margin-bottom: 60px;
+			text-align: justify;
+		}
+
+		.page-3 .text .para h4 {
+			font-size: 24px;
+			color: #2F5933;
+			margin-bottom: 22px;
+		}
+
+		.page-3 .text .para p {
+			font-size: 14px;
+			line-height: 16px;
+		}
+
+		.page-4 .logo_wrapper {
+			position: absolute;
+			min-height: 100px;
+			height: auto;
+			width: 400px;
+			z-index: 1;
+			top: 183px;
+			left: 37px;
+		}
+
+
+		.page-4 .logo_partner {
+			height: 100%;
+			width: auto;
+			object-fit: contain;
+			display: block;
+			position: absolute;
+			left: 50%;
+			top: 0;
+			transform: translateX(-50%);
+		}
+
+		.page-4 .nombre_arbre {
+			position: absolute;
+			top: 171px;
+			right: 117px;
+			z-index: 1;
+			text-align: center;
+		}
+
+		.page-4 .nombre_arbre strong {
+			font-size: 107px;
+			color: #2F5933;
+			letter-spacing: -3.8px;
+			line-height: 100px;
+		}
+
+		.page-4 .nombre_arbre p {
+			font-size: 32px;
+			color: black;
+			font-weight: bold;
+			letter-spacing: 1px;
+			word-spacing: 2px;
+		}
+
+		.page-4 .image-bottom {
+			position: absolute;
+			bottom: 0;
+			left: 0;
+			width: 100%;
+			height: 48%;
+			z-index: 1;
+		}
+
+
+		.page-5 h2 {
+			position: absolute;
+			top: 51px;
+			left: 47px;
+			font-size: 34px;
+			color: #2F5933;
+			z-index: 1;
+			letter-spacing: 3px;
+		}
+
+
+		.page-5 .vert,
+		.page-5 .rouge,
+		.page-5 .orange {
+			position: absolute;
+			bottom: 0;
+			width: 316px;
+			height: 616px;
+			z-index: 1;
+		}
+
+		.page-5 .vert .bg,
+		.page-5 .rouge .bg,
+		.page-5 .orange .bg {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+		}
+
+		.page-5 .vert .icon,
+		.page-5 .rouge .icon,
+		.page-5 .orange .icon {
+			position: absolute;
+			top: 34px;
+			left: 124px;
+			width: 67px;
+			height: 67px;
+			object-fit: contain;
+		}
+
+		.page-5 .vert .text,
+		.page-5 .rouge .text,
+		.page-5 .orange .text {
+			position: absolute;
+			top: 101px;
+			left: 50%;
+			transform: translateX(-50%);
+			font-size: 28px;
+			color: #FEEFD5;
+			z-index: 1;
+			text-align: center;
+			font-weight: bold;
+			letter-spacing: 1.2px;
+		}
+
+		.page-5 .vert .line,
+		.page-5 .rouge .line,
+		.page-5 .orange .line {
+			position: absolute;
+			left: 50%;
+			transform: translateX(-50%);
+			width: 100%;
+			text-align: center;
+			color: #FEEFD5;
+		}
+
+
+		.page-5 .vert .line-1,
+		.page-5 .rouge .line-1,
+		.page-5 .orange .line-1 {
+			top: 204px;
+		}
+
+
+		.page-5 .vert .line-2,
+		.page-5 .rouge .line-2,
+		.page-5 .orange .line-2 {
+			top: 335px;
+		}
+
+
+		.page-5 .vert .line-3,
+		.page-5 .rouge .line-3,
+		.page-5 .orange .line-3 {
+			top: 466px;
+		}
+
+
+		.page-5 .vert .line strong,
+		.page-5 .rouge .line strong,
+		.page-5 .orange .line strong {
+			font-size: 60px;
+			line-height: 69px;
+			letter-spacing: -2px;
+		}
+
+		.page-5 .vert .line p,
+		.page-5 .rouge .line p,
+		.page-5 .orange .line p {
+			font-size: 16px;
+		}
+
+		.page-5 .vert .line p span,
+		.page-5 .rouge .line p span,
+		.page-5 .orange .line p span {
+			display: block;
+		}
+
+		.page-5 .vert {
+			left: 46px;
+		}
+
+		.page-5 .rouge {
+			left: 400px;
+		}
+
+		.page-5 .orange {
+			left: 754px;
+		}
+
+		.page-6 .text {
+			position: absolute;
+			bottom: 0;
+			left: 46px;
+			width: 100%;
+			height: 743px;
+			z-index: 1;
+			letter-spacing: 1.2px;
+		}
+
+		.page-6 .text h2 {
+			font-size: 34px;
+			color: #2F5933;
+			margin-bottom: 68px;
+		}
+
+
+		.page-7 .femme {
+			position: absolute;
+			bottom: 0;
+			right: 46px;
+			z-index: 1;
+			clip-path: polygon(0 4%, 100% 1%, 100% 100%, 0% 100%);
+		}
+
+		.page-7 .text {
+			position: absolute;
+			bottom: 0;
+			left: 46px;
+			width: 487px;
+			height: 743px;
+			z-index: 1;
+			letter-spacing: 1.2px;
+		}
+
+		.page-7 .text h2 {
+			font-size: 34px;
+			color: #2F5933;
+			margin-bottom: 68px;
+		}
+
+
+		.page-7 .text .para {
+			text-align: justify;
+		}
+
+		.page-7 .text .para h4 {
+			font-size: 27px;
+			color: black;
+			margin-bottom: 16px;
+		}
+
+		.page-7 .text .para p {
+			font-size: 16px;
+			margin-bottom: 22px;
+		}
+
+		.page-8 .logo-bondy {
+			position: absolute;
+			width: 275px;
+			height: auto;
+			z-index: 1;
+			top: 0;
+			left: 50%;
+			transform: translateX(-50%);
+		}
+
+		.page-8 .logo-reseau {
+			position: absolute;
+			width: 275px;
+			height: 212px;
+			z-index: 2;
+			bottom: 0;
+			left: 37.8%;
+		}
+
+		.page-8 .logo-reseau .linkedin,
+		.page-8 .logo-reseau .youtube,
+		.page-8 .logo-reseau .facebook,
+		.page-8 .logo-reseau .instagram {
+			position: absolute;
+			width: 56px;
+			height: 56px;
+			background: #2F5933;
+			top: -12px;
+		}
+
+		.page-8 .logo-reseau .linkedin img,
+		.page-8 .logo-reseau .youtube img,
+		.page-8 .logo-reseau .facebook img,
+		.page-8 .logo-reseau .instagram img {
+			position: absolute;
+			width: 40px;
+			height: 40px;
+			object-fit: contain;
+			top: 8px;
+			left: 8px;
+		}
+
+		.page-8 .logo-reseau .linkedin img {
+			width: 34px;
+			height: 34px;
+		}
+
+		.page-8 .logo-reseau .linkedin {
+			right: 205px;
+		}
+
+		.page-8 .logo-reseau .youtube {
+			right: 140px;
+		}
+
+		.page-8 .logo-reseau .facebook {
+			left: 140px;
+		}
+
+		.page-8 .logo-reseau .instagram {
+			left: 205px;
+		}
+
+		.page-8 .logo-reseau .link {
+			position: absolute;
+			bottom: 46%;
+			left: 49%;
+			transform: translate(-50%, 50%);
+			color: rgba(255, 255, 255, 0.8);
+			font-size: 20px;
+			font-weight: bold;
+			text-align: center;
+			text-decoration: none;
+			z-index: 1;
+		}
+
+		.page-8 .shape {
+			position: absolute;
+			width: 275px;
+			height: 212px;
+			z-index: 1;
+			bottom: 0;
+			left: 50%;
+			transform: translateX(-50%);
+		}
+
+		.rte,
+		.rte p,
+		.rte ul,
+		.rte ol {
+			font-size: 14px !important;
+			margin-bottom: 10px;
+			color: #231f20;
+			text-align: left;
+		}
+
+
+		.rte h1,
+		.rte h2,
+		.rte h3,
+		.rte h4,
+		.rte h5,
+		.rte h6 {
+			color: #2F5933;
+			font-weight: bold;
+			margin-bottom: 10px !important;
+		}
+
+		.rte h1 {
+			font-size: 22px !important;
+		}
+
+		.rte h2 {
+			font-size: 20px !important;
+		}
+
+		.rte h3 {
+			font-size: 18px !important;
+		}
+
+		.rte h4,
+		.rte h5,
+		.rte h6 {
+			font-size: 16px !important;
+		}
+
+		/* Style commun aux listes */
+		.rte ul,
+		.rte ol {
+			margin: 1em 0;
+			padding-left: 2em;
+			font-size: 16px;
+			line-height: 1.6;
+			color: #333;
+		}
+
+		/* Style pour la couleur des puces de <ul> */
+		.rte ul li::marker {
+			color: #2F5933;
+		}
+
+		/* Style pour la couleur des numéros de <ol> */
+		.rte ol li::marker {
+			color: #2F5933;
+			font-weight: bold;
+		}
+	</style>
+
+
+	<style>
+		.page-6 .chart-container {
+			width: 245px;
+			height: 245px;
+			position: absolute;
+			top: 50%;
+			left: 168px;
+			transform: translateY(-40px);
+			text-align: center;
+			z-index: 1;
+		}
+
+		.page-6 .chart-container .center-text {
+			position: absolute;
+			top: 30px;
+			left: 50%;
+			transform: translateX(-50%);
+		}
+
+		.page-6 .chart-container .center-text .label {
+			margin: 0;
+			font-size: 29px;
+			color: #333;
+			font-weight: normal;
+		}
+
+		.page-6 .chart-container .center-text p {
+			margin: 0;
+			font-size: 16px;
+			color: #666;
+		}
+
+
+		.page-6 .text_context {
+			position: absolute;
+			width: 418px;
+			top: 50%;
+			transform: translateY(-32%);
+			right: 257px;
+			z-index: 1;
+		}
+
+		.page-6 .text_context .legende {
+			position: relative;
+			width: 100%;
+			margin-bottom: 33px;
+		}
+
+		.page-6 .text_context .legende .color {
+			position: absolute;
+			width: 24px;
+			height: 20px;
+			top: 0;
+			left: 0;
+		}
+
+		.page-6 .text_context .legende .text_legende {
+			margin-left: 33px;
+			font-size: 18px;
+		}
+
+		.page-6 .text_context .legende span {
+			position: absolute;
+			top: 0;
+			right: 0;
+			font-weight: bold;
+		}
+	</style>
+
+	<body>
+		<div class="container">
+			<div
+				class="wrapper">
+
+				{# page 1 #}
+				<div class="page page-1">
+					<img class="bg" src="{{ images[1] }}" alt="image">
+
+					<a class="logo" href="https://www.bondy.earth/" target="_blank">
+						<img src="{{ images[2] }}" alt="logo">
+					</a>
+
+					<img class="title" src="{{ images['title'] }}" alt="title">
+
+					<div class="title_text">to make your company bond with nature.</div>
+
+					<div class="logo_wrapper">
+						<img class="logo_partner" src="{{ convert_file_to_base64(user.logo) }}" alt="logo partner">
+					</div>
+
+					<a class="link" target="_blank" href="https://www.bondy.earth/">www.bondy.earth</a>
+				</div>
+
+				{# page 2 #}
+				<div class="page page-2">
+					<img class="background" src="{{ images['background'] }}" alt="image">
+
+					<img class="mini-logo" src="{{ images[0] }}" alt="mini-logo">
+
+					<img class="ceo" src="{{ images[3] }}" alt="ceo">
+
+					<div class="text_ceo">
+						<h2 class="title">Message from the CEO</h2>
+
+						<p>At Bôndy, we firmly believe that landscape restoration can only be achieved through strong and
+																																																																																																																																																																																																																																																																																																																											                    committed collaborations. This is why we are proud to build strategic partnerships that share our
+																																																																																																																																																																																																																																																																																																																											                    vision of regenerative agriculture and sustainable resource management.</p>
+
+						<p>This partnership marks a significant milestone in our commitment to reconciling economic performance
+																																																																																																																																																																																																																																																																																																																											                    with positive environmental impact. Together, we are developing innovative solutions that create
+																																																																																																																																																																																																																																																																																																																											                    value both for local communities and for the ecosystems we strive to protect.</p>
+
+						<p>This collaboration strengthens our conviction that concrete and ambitious actions can make a real
+																																																																																																																																																																																																																																																																																																																											                    difference. We are eager to continue this momentum and amplify our impact, hand in hand.</p>
+
+						<p>Together, let’s build a more resilient and sustainable future.</p>
+
+						<div class="ceo_name">Gabriel Tasso</div>
+
+					</div>
+				</div>
+
+				{# page 3 repete la page 3 #}
+
+				{% if projectChildList is not empty %}
+					{% for projectChild in projectChildList %}
+						{% include 'admin/pdf/page/page-project.html.twig' with { 'projectChild': projectChild, 'images': images } %}
+					{% endfor %}
+				{% endif %}
+
+				{# page 4 #}
+				<div class="page page-4">
+					<img class="background" src="{{ images['background'] }}" alt="image">
+
+					<img class="mini-logo" src="{{ images[0] }}" alt="mini-logo">
+
+
+					<div class="logo_wrapper">
+						<img class="logo_partner" src="{{ convert_file_to_base64(user.logo) }}" alt="logo partner">
+					</div>
+
+					<div class="nombre_arbre">
+						<strong>{{ totalTreeCount|number_format(0, ' ', ' ') }}</strong>
+						<p>Growing trees</p>
+					</div>
+
+					<img class="image-bottom" src="{{ images[6] }}" alt=" image">
+
+				</div>
+
+				{# page 5 repete la page 5 #}
+				<div class="page page-5">
+					<img class="background" src="{{ images['background'] }}" alt="image">
+
+					<img class="mini-logo" src="{{ images[0] }}" alt="mini-logo">
+
+					<img class="top-logo" src="{{ convert_file_to_base64(user.logo) }}" alt="logo partener">
+
+					<h2>Your impacts</h2>
+
+					<div class="vert">
+						<img class="bg" src="{{ images['vert'] }}" alt="vert">
+
+						<img class="icon" src="{{ images['vert_icon'] }}" alt="icon">
+
+						<div class="text">
+							environmental
+						</div>
+
+
+						<div class="line line-1">
+							<strong>{{ totalTreeCount|number_format(0, ' ', ' ') }}</strong>
+							<p>trees planted</p>
+						</div>
+
+
+						<div class="line line-2">
+							<strong>{{ projectMetrics.TCO2Sequestered|number_format(0, ' ', ' ') }}</strong>
+							<p>TCO2 sequestered
+								<span>(over 20 years)</span>
+							</p>
+						</div>
+
+
+					</div>
+
+					<div class="rouge">
+						<img class="bg" src="{{ images['rouge'] }}" alt="rouge">
+
+						<img class="icon" src="{{ images['rouge_icon'] }}" alt="rouge">
+
+						<div class="text">economic</div>
+
+
+						<div class="line line-1">
+							<strong>{{ projectMetrics.totalSustainableEmployment|number_format(0, ' ', ' ') }}</strong>
+							<p>Sustainable employment</p>
+						</div>
+
+
+						<div class="line line-2">
+							<strong>{{ projectMetrics.totalRestoredHectares|number_format(0, ' ', ' ') }}</strong>
+							<p>Restored hectares, generating an economic opportunity</p>
+						</div>
+
+					</div>
+
+					<div class="orange">
+						<img class="bg" src="{{ images['orange'] }}" alt="orange">
+
+						<img class="icon" src="{{ images['orange_icon'] }}" alt="orange">
+
+						<div class="text">social</div>
+
+						{% if projectMetrics.totalPartnerFarmers > 0 %}
+							<div class="line line-1">
+								<strong>{{ projectMetrics.totalPartnerFarmers|number_format(0, ' ', ' ') }}</strong>
+								<p>Partner farmers</p>
+							</div>
+							<div class="line line-2">
+								<strong>{{ projectMetrics.totalSeasonalJobs|number_format(0, ' ', ' ') }}</strong>
+								<p>Seasonal jobs</p>
+							</div>
+							<div class="line line-3">
+								<strong>{{ projectMetrics.totalIndirectBeneficiaries|number_format(0, ' ', ' ') }}</strong>
+								<p>Indirect beneficiaries</p>
+							</div>
+						{% else %}
+							<div class="line line-1">
+								<strong>{{ projectMetrics.totalSeasonalJobs|number_format(0, ' ', ' ') }}</strong>
+								<p>Seasonal jobs</p>
+							</div>
+							<div class="line line-2">
+								<strong>{{ projectMetrics.totalIndirectBeneficiaries|number_format(0, ' ', ' ') }}</strong>
+								<p>Indirect beneficiaries</p>
+							</div>
+						{% endif %}
+					</div>
+				</div>
+
+				{# page 6 chart ici #}
+				{% if treeSpecies is not empty %}
+					{% for treeSpeciesChunk in treeSpecies %}
+						{% include 'admin/pdf/page/page-tree-species.html.twig' with { 'treeSpecies': treeSpeciesChunk, 'totalTreeCount': totalTreeCount, 'chart': chart, 'images': images } %}
+					{% endfor %}
+				{% endif %}
+
+
+				{# page 7 repete la page 7 #}
+				{% if subProjects is not empty %}
+					{% for subProject in subProjects %}
+						{% include 'admin/pdf/page/page-sub-project.html.twig' with { 'subProject': subProject, 'images': images } %}
+					{% endfor %}
+				{% endif %}
+
+
+				{# page 8 footer #}
+				<div class="page page-8">
+					<img class="background" src="{{ images['background'] }}" alt="image">
+
+					<img class="mini-logo" src="{{ images[0] }}" alt="mini-logo">
+
+
+					<img class="logo-bondy" src="{{ images[10] }}" alt="logo bondy">
+
+					<div class="logo-reseau">
+
+						<a class="linkedin" href="https://www.linkedin.com/company/b%C3%B4ndy/mycompany/" target="_blank"><img src="{{ images["logo_linkedin"] }}" alt="linkedin"></a>
+						<a class="youtube" href="https://www.youtube.com/@bondy9257" target="_blank"><img src="{{ images["logo_youtube"] }}" alt="youtube"></a>
+						<a class="facebook" href="https://www.facebook.com/Bondyreboisement" target="_blank"><img src="{{ images["logo_facebook"] }}" alt="facebook"></a>
+						<a class="instagram" href="https://www.instagram.com/bondy_trees/" target="_blank"><img src="{{ images["logo_insta"] }}" alt="instagram"></a>
+
+
+						<a class="link" href="https://www.bondy.earth/" target="_blank">www.bondy.earth</a>
+					</div>
+
+					<img class="shape" src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMTAwIDEwMCIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cG9seWdvbiBwb2ludHM9IjAsNCAxMDAsMSAxMDAsMTAwIDAsMTAwIiBmaWxsPSIjQ0I5NTVCIiAvPgo8L3N2Zz4=" alt="SVG Shape"/>
+
+				</div>
+			</div>
+		</div>
+	</body>
+</html></body></html>

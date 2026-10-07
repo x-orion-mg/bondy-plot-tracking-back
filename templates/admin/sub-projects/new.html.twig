@@ -1,0 +1,244 @@
+{% extends 'base.html.twig' %}
+
+{% if entityType == 'project-child' %}
+    {% set menu_partner = true %}
+    {% set menu_manage_prj_partner = true %}
+{% elseif entityType == 'project-bondy' %}
+    {% set menu_bondy = true %}
+    {% set menu_manage_prj_bondy = true %}
+{% endif %}
+
+{% set routes = {
+    'parcel': 'parcel_edit',
+    'project': 'project_child_edit',
+    'tree-species': 'tree_species_edit'
+} %}
+{% set routeName = routes[entityType] | default('project_child_edit') %}
+
+{% block body %}
+    <link rel="stylesheet" href="{{ asset('admin/vendors/summernote/summernote-bs4.css') }}">
+    <div class="page-header justify-content-between">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href={{ path('admin_dashboard') }}>Accueil</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{{ path(routeName,{'id':entityId}) }}">{{ entityType == 'project-child' ? 'Gestion des partenaires' : 'Gestion projets Bondy' }}</a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">Modification sous-projet / projets locaux partenaire</li>
+            </ol>
+        </nav>
+        <div>
+            <a href="{{ path(routeName,{'id':entityId}) }}" class="btn btn-outline-primary" title="List">Retour</a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card">
+                <div class="app-sidebar-menu">
+                    <div class="list-group list-group-flush">
+                        <a href="#infoge" class="list-group-item active d-flex align-items-center">
+                            <i data-feather="globe" class="mr-2 width-15 height-15"></i>
+                            Informations générales
+                        </a>
+                        <a href="#history" class="list-group-item d-flex align-items-center">
+                            <i data-feather="film" class="mr-2 width-15 height-15"></i>
+                            Histoire du projet
+                        </a>
+                        <a href="#localisation" class="list-group-item d-flex align-items-center">
+                            <i data-feather="map-pin" class="mr-2 width-15 height-15"></i>
+                            Localisation
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-md-9">
+            <form id="subproject-new"
+                  action="{{ path('subproject_new', {'entityId': entityId,'entityType':'project-child'}) }}"
+                  method="POST"
+                  enctype="multipart/form-data">
+                <div class="card" id="infoge">
+                    <div class="card-header">
+                        Informations générales
+                    </div>
+                    <div class="card-body">
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label>Nom du sous-projet / Projets locaux<span class="text-danger">*</span></label>
+                                <input type="text" class="form-control"
+                                       aria-describedby="emailHelp" placeholder="" name="name" required>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label>Date de début <span class="text-danger">*</span></label>
+                                <input type="text" name="startDate" class="datepick form-control" required>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label>Bannière image <span class="text-danger">*</span></label>
+                                <div class="custom-file">
+                                    <input type="file" class="custom-file-input" name="uploadFile" required>
+                                    <label class="custom-file-label" for="customFile">Choisissez un fichier</label>
+                                </div>
+                                <small>Dimension 707x205px</small>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label>Icone <span class="text-danger">*</span></label>
+                                <div class="custom-file">
+                                    <input type="file" class="custom-file-input" name="iconFile">
+                                    <label class="custom-file-label" for="customFile">Choisir</label>
+                                    <small>Formats acceptés : jpeg, jpg, png,svg<br>
+                                        Taille maximum image : 5 mo <br>
+                                        Dimension 29x26px
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" id="history">
+                    <div class="card-header">
+                        Histoire du projet
+                    </div>
+                    <div class="card-body">
+
+                        <div class="form-group">
+                            <label>Extrait</label>
+                            <textarea class="form-control" name="historyExcerpt"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Contenu <span class="text-danger">*</span></label>
+                            <textarea class="form-control summernote-editor" name="historyContent" required></textarea>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="card" id="localisation">
+                    <div class="card-header">
+                        Localisation
+                    </div>
+                    <div class="card-body">
+                        <div class="form-row">
+                            <div class="form-group col-md-4">
+                                <label>Pays</label>
+                                {% if localisation and localisation.country %}
+                                    <input type="text" disabled class="form-control"
+                                           aria-describedby="emailHelp" placeholder="" value="{{ localisation.country }}">
+                                {% else %}
+                                    <p>Country not found.</p>
+                                {% endif %}
+                            </div>
+
+                            <div class="form-group col-md-4">
+                                <label>Région</label>
+                                {% if localisation and localisation.region %}
+                                    <input type="text" disabled class="form-control"
+                                           aria-describedby="emailHelp" placeholder="" value="{{ localisation.region }}">
+                                {% else %}
+                                    <p>Region not found.</p>
+                                {% endif %}
+                            </div>
+
+                            <div class="form-group col-md-4">
+                                <label>Ville</label>
+                                <input type="text" class="form-control"
+                                       aria-describedby="emailHelp" placeholder="" name="city">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label>Longitude <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control"
+                                       aria-describedby="emailHelp" placeholder="" name="longitude" required>
+                            </div>
+
+                            <div class="form-group col-md-6">
+                                <label>Latitude <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control"
+                                       aria-describedby="emailHelp" placeholder="" name="latitude" required>
+                            </div>
+                        </div>
+
+                        <div class="w-100 text-right mt-5">
+                            <button type="submit" class="btn btn-primary">Enregistrer</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+
+        </div>
+
+    </div>
+
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('admin/assets/js/anchor.js') }} "></script>
+    <script src="{{ asset('admin/vendors/fixto/fixto.js') }} "></script>
+    <script src="{{ asset('admin/vendors/lightbox/jquery.magnific-popup.min.js') }} "></script>
+    <script src="{{ asset('admin/vendors/summernote/summernote-bs4.min.js') }} "></script>
+
+    <script>
+        $(function () {
+            $(document).ready(function () {
+                $('.select2-example').select2({
+                    placeholder: 'Selectionner'
+                });
+
+                //editor
+                $('.summernote-editor').summernote({
+                    placeholder: 'Contenu...',
+                    tabsize: 2,
+                    height: 100,
+                });
+
+                $('input.datepick').daterangepicker({
+                    singleDatePicker: true,
+                    showDropdowns: true,
+                    locale: {
+                        format: 'DD/MM/YYYY', // Format français
+                        applyLabel: "Appliquer",
+                        cancelLabel: "Annuler",
+                        daysOfWeek: ["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"],
+                        monthNames: [
+                            "Janvier", "Février", "Mars", "Avril", "Mai", "Juin",
+                            "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"
+                        ],
+                        firstDay: 1 // Lundi comme premier jour de la semaine
+                    }
+                });
+
+                $('.app-sidebar-menu').fixTo('body', {
+                    zIndex: 1,
+                    top: 75
+                });
+
+                let magnificPopupGalleryConfig = {
+                    type: 'image',
+                    gallery: {
+                        enabled: true
+                    }
+                };
+                $('.image-popup-gallery-item').magnificPopup(magnificPopupGalleryConfig);
+
+                $('.app-sidebar-menu .list-group >a').on('click', function () {
+                    $('.app-sidebar-menu .list-group >a').removeClass('active');
+                    $(this).addClass('active');
+                })
+
+            });
+        })
+
+
+    </script>
+
+
+{% endblock %}

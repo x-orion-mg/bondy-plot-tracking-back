@@ -1,0 +1,12 @@
+FROM registry.pulse.mg/dev/php8.1-apache-composer:1.0 as base
+
+RUN apt-get update && apt-get install -y \
+    git unzip libpng-dev libonig-dev libxml2-dev libzip-dev mariadb-client \
+    && docker-php-ext-install pdo pdo_mysql opcache zip gd exif
+
+RUN a2enmod rewrite headers ssl
+
+WORKDIR /var/www/html
+RUN chown -R www-data:www-data /var/www/html
+RUN chmod -R 755 /var/www/html
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer

@@ -1,0 +1,25 @@
+GET {{site_url}}/api/v1/genres
+Content-Type: application/json
+
+###
+GET {{site_url}}/api/v1/genres/10
+Content-Type: application/json
+
+###
+GET {{site_url}}/api/v1/projects/types/
+Content-Type: application/json
+
+{
+    "libelle": "Genre 1"
+}
+
+###
+PUT {{site_url}}/api/v1/genres/10
+Content-Type: application/json
+
+{
+    "libelle": "Genre 1"
+}
+
+###
+DELETE {{site_url}}/api/v1/genres/10

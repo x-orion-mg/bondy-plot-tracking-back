@@ -1,0 +1,136 @@
+{% extends 'base.html.twig' %}
+
+{% set menu_bondy = true %}
+{% set menu_manage_prj_bondy = true %}
+{% block body %}
+    <div class="page-header justify-content-between">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href={{ path('admin_dashboard') }}>Accueil</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{{ current_url }}">Gestion projets Bondy</a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">Liste des projets Bondy</li>
+            </ol>
+        </nav>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="card-title">Filtres</h6>
+                    <form>
+                        <div class="row">
+                            {% if (project_types) %}
+                                <div class="col-lg-3 col-md-6">
+                                    <div class="form-group">
+                                        <label>Type de projet</label>
+                                        <select class="form-control" name="project_type" id="project-type">
+                                            <option value="">Tous</option>
+                                            {% for type in project_types %}
+                                            <option value="{{ type.id }}">{{ type.label }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            {% endif %}
+                            {% if (project_status) %}
+                            <div class="col-lg-3 col-md-6">
+                                <div class="form-group">
+                                    <label>Statut</label>
+                                    <select class="form-control" name="project_status" id="project-status">
+                                        <option value="">Tous</option>
+                                        {% for status in project_status %}
+                                            <option value="{{ status.id }}">{{ status.label }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            {% endif %}
+
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="myTable" class="table table-lg">
+                            <thead>
+                            <tr>
+                                <th>Localisation</th>
+                                <th class="text-center no-sort">Date début</th>
+                                <th class="text-center no-sort">Nbr d'arbres</th>
+                                <th class="text-center no-sort">Statut</th>
+                                <th class="text-center no-sort">Type</th>
+                                <th class="text-center no-sort">Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                {% if (project_parents) %}
+                                    {% for project in project_parents %}
+                                    <tr>
+                                        <td><i class="fa fa-map-marker"></i> {{ project.localisation.country }} - {{ project.localisation.region }} - {{ project.city }}</td>
+                                        <td class="text-center">
+                                            <span class="badge badge-pill bg-info">
+                                                <i class="fa fa-calendar"></i>
+                                                <span class="font-weight-light">Janvier 2023</span>
+                                            </span>
+                                        </td>
+                                        <td class="text-center">10</td>
+                                        <td class="text-center">
+                                            <span class="badge bg-info-bright text-info">{{ project.projectStatus.label }}</span>
+                                        </td>
+                                        <td class="text-center">
+                                            <span class="badge bg-success-gradient">{{ project.projectType.label }}</span>
+                                        </td>
+                                        <td>
+                                            <a href="{{ path('project_parent_show', {id: project.id}) }}" class="text-info" data-toggle="tooltip" title="Visualiser">
+                                                <i class="ti-eye"></i>
+                                            </a>
+                                            <a href="{{ path('project_parent_edit', {id: project.id}) }}" class="text-secondary ml-2" data-toggle="tooltip" title="Modifier">
+                                                <i class="ti-pencil"></i>
+                                            </a>
+                                           {# <a href="{{ path('project_parent_delete', {id: project.id}) }}" class="text-danger ml-2" data-toggle="modal" data-target="#deleteModal" >
+                                                <i class="ti-trash" data-toggle="tooltip" title="Supprimer"></i>
+                                            </a>#}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" tabindex="-1" role="dialog" id="deleteModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Suppression</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Voulez-vous supprimer cet élément ? Cet action est irreversible.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                    <button type="button" class="btn btn-primary">Supprimer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('admin/assets/js/js_backoffice/bondy.js') }}"></script>
+{% endblock %}

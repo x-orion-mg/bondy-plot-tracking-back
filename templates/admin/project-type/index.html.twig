@@ -1,0 +1,159 @@
+{% extends 'base.html.twig' %}
+
+{% set menu_bondy = true %}
+{% set menu_manage_prj_type = true %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        .color-preview {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            margin-left: 10px;
+            border: 1px solid #000;
+            vertical-align: middle;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="page-header justify-content-between">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href={{ path('admin_dashboard') }}>Accueil</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{{ path('project_parent_list') }}">Gestion projets Bondy</a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">Type de projet</li>
+            </ol>
+        </nav>
+        <div>
+            <a href="javascript;" data-toggle="modal"  data-target="#editTypeModal" class="btn btn-outline-primary btn-create" title="List" >Ajouter</a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive">
+
+                        <table id="myTable" class="table table-striped table-bordered">
+                            <thead>
+                            <tr>
+                                <th>Type de projet</th>
+                                <th>Couleur</th>
+                                <th>Action</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                {% if project_types %}
+                                    {% for project_type in project_types %}
+                                    <tr>
+                                        <td>{{ project_type.label }}</td>
+                                        <td>
+                                            <span class="badge badge-pill" style="background-color: {{ project_type.color ?? '#1B5A2E' }};">&nbsp;</span>
+                                        </td>
+                                        <td>
+                                            <a href="javascript:void(0);" class="text-secondary btn-edit" data-toggle="modal"  data-target="#editTypeModal" title="Modifier"
+                                                data-id="{{ project_type.id }}" 
+                                                data-label="{{ project_type.label }}" 
+                                                data-color="{{ project_type.color ?? '#1B5A2E' }}" >
+                                                <i class="ti-pencil"></i>
+                                            </a>
+                                            <a href="javascript:void(0);" class="text-danger ml-2 btn-delete" data-toggle="modal" data-target="#deleteTypeModal" title="Supprimer"
+                                            data-id="{{ project_type.id }}" >
+                                                <i class="ti-trash"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                {% endif %}
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="modal" tabindex="-1" role="dialog" id="editTypeModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Modification</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="id-edit-project-type" action="{{ path('project_type_create') }}" method="post" enctype="multipart/form-data">
+                        <input type="hidden" name="id" id="id">
+                        <div class="form-group">
+                            <label>Type de projet <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="label" name="label"
+                                    aria-describedby="emailHelp" placeholder="" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Couleur <span class="text-danger">*</span></label>
+                            <div class="input-group colorpicker-example">
+                                <input type="text" value="red" class="form-control" id="color" name="color" pattern="^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$" />
+                                <div class="input-group-append">
+                                    <span class="input-group-text"><i></i></span>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-save-type-project text-white">Enregistrer</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" tabindex="-1" role="dialog" id="deleteTypeModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Suppression</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Voulez-vous supprimer cet élément ? Cette information sera supprimée dans les projets concernés. Cet action est irreversible.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                    <a href="javascript:void(0);" class="btn btn-primary btn-confirm-delete text-white">Supprimer</a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        $('.select2-example').select2({
+            placeholder: 'Selectionner'
+        });
+        $('#color').on('change', function() {
+            let selectedColor = $(this).val();
+            $('#editTypeModal').find('.modal-body .color-preview').css('background-color', selectedColor);
+        });
+        url_create = "{{ path('project_type_create') }}";
+        url_delete = "{{ path('project_type_delete') }}";
+    </script>
+    <script src="{{ asset('admin/assets/js/js_backoffice/type-project.js') }}" ></script>
+{% endblock %}

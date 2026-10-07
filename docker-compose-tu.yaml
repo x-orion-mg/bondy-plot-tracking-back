@@ -1,0 +1,33 @@
+version: "2"
+
+services:
+  bondy-db:
+    image: mariadb:10.6
+    container_name: bondy-db
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: sz29a8a7gkd285
+      MYSQL_USER: bondy_back
+      MYSQL_PASSWORD: sz29a8a7gkd285
+      MYSQL_DATABASE: bondy_back_test
+    networks:
+      - bondy
+  bondy-back:
+    build:
+      context: .
+      dockerfile: Dockerfile.test
+    container_name: bondy-back
+    volumes:
+      - ./config:/var/www/html/config
+      - ./migrations:/var/www/html/migrations
+      - ./src:/var/www/html/src
+      - ./tests:/var/www/html/tests
+      - .env.test:/var/www/html/.env
+      - .env.test:/var/www/html/.env.test
+    depends_on:
+      - bondy-db
+    networks:
+      - bondy
+networks:
+  bondy:

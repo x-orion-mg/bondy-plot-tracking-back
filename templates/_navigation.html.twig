@@ -1,0 +1,95 @@
+{% set active = 'active' %}
+<div class="navigation">
+    <div class="navigation-menu-tab">
+        <ul>
+            <li>
+                <a href="#" data-toggle="tooltip" data-placement="right" title="Projets Bondy" 
+                class="{{ menu_bondy is defined ? 'active' }}"
+                    data-nav-target="#project-bondy">
+                    <i data-feather="briefcase"></i>
+                </a>
+            </li>
+            <li>
+                <a href="#" data-toggle="tooltip" data-placement="right" title="Gestion des partenaires"
+                class="{{ menu_partner is defined ? 'active' }}"
+                    data-nav-target="#partners">
+                    <i data-feather="users"></i>
+                </a>
+            </li>
+            <li>
+                <a href="#" data-toggle="tooltip" data-placement="right" title="Utilisateurs"
+                class="{{ menu_users is defined ? 'active' }}"
+                    data-nav-target="#administrator">
+                    <i data-feather="user-check"></i>
+                </a>
+            </li>
+            <li>
+                <a href="#" data-toggle="tooltip" data-placement="right" title="Paramètrages"
+                class="{{ menu_settings is defined ? 'active' }}"
+                    data-nav-target="#settings">
+                    <i data-feather="settings"></i>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <div class="navigation-menu-body">
+        <div class="navigation-menu-group">
+            <div id="project-bondy">
+                <ul>
+                    <li class="navigation-divider d-flex align-items-center">
+                        <i class="mr-2" data-feather="briefcase"></i> Gestion projets Bondy
+                    </li>
+                    <li>
+                        <a class="{{ menu_manage_prj_bondy is defined ? 'active' }}" 
+                        href="{{ path('project_parent_list') }}">Liste des projets Bondy</a>
+                    </li>
+                    <li>
+                        <a class="{{ menu_manage_prj_type is defined ? 'active' }}" 
+                        href="{{ path('project_type_index') }}">Type de projet</a>
+                    </li>
+                    <li><a class="{{ menu_manage_localisation is defined ? 'active' }}" 
+                        href="{{ path('localisation_list') }}">Localisation</a></li>
+                </ul>
+            </div>
+            <div id="partners">
+                <ul>
+                    <li class="navigation-divider d-flex align-items-center">
+                        <i class="mr-2" data-feather="users"></i> Gestion des partenaires
+                    </li>
+                    <li>
+                        <a class="{{ menu_manage_partner is defined ? 'active' }}" 
+                        href="{{ path('partner_index') }}">Liste des partenaires</a></li>
+                    <li>
+                        <a class="{{ menu_manage_prj_partner is defined ? 'active' }}" 
+                        href="{{ path('project_child_index') }}">Liste des projets partenaire</a>
+                    </li>
+                </ul>
+            </div>
+            <div id="administrator">
+                <ul>
+                    <li class="navigation-divider d-flex align-items-center">
+                        <i class="mr-2" data-feather="user-check"></i> Gestion des utilisateurs
+                    </li>
+                    <li>
+                        <a class="{{ menu_manage_users is defined ? 'active' }}" 
+                        href="{{ path('user_list') }}">Liste des utilisateurs</a></li>
+                </ul>
+            </div>
+            <div id="settings">
+                <ul>
+                    <li class="navigation-divider d-flex align-items-center">
+                        <i class="mr-2" data-feather="settings"></i> Paramétrages
+                    </li>
+                    <li>
+                        <a class="{{ menu_manage_tree_species is defined ? 'active' }}" 
+                        href="{{ path('tree_species_index') }}">Especes d'arbre</a>
+                    </li>
+                    <li>
+                        <a class="{{ menu_manage_usage_type is defined ? 'active' }}"
+                        href="{{ path('usage_type_index') }}">Type d'utilisation des arbres</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    </div>

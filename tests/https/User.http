@@ -1,0 +1,43 @@
+GET {{site_url}}/api/v1/users/02ae4501-61bd-4d71-becc-1039fca540c2/tree/BON-2024-1-0013
+Content-Type: application/json
+
+
+### GET request with parameter
+GET {{site_url}}/api/v1/users/uuid/?email=mahery.rakotoarison@pulse.mg
+Accept: application/json
+
+
+### GET Dashboard Parnter
+GET {{site_url}}/api/v1/dashboard/ec548d64-57c9-499f-9f33-1c6bb03c1dd0/user
+Accept: application/json
+
+
+### Send POST request with json body with parameter certificate
+POST {{site_url}}/api/v1/download
+Content-Type: application/json
+
+{
+  "uuid": "67f94210-4de6-4f8d-a509-9af309edaeb9",
+  "code": 1234,
+  "type": "certificate"
+}
+
+
+### Send POST request with json body with parameter report-history
+POST {{site_url}}/api/v1/download
+Content-Type: application/json
+
+{
+  "uuid": "67f94210-4de6-4f8d-a509-9af309edaeb9",
+  "code": 1234,
+  "type": "report-history"
+}
+### Send POST request token
+GET {{site_url}}/api/v1/partner/check-token?token=dda08abbef6b2178a840c162f78e0912
+Content-Type: application/json
+
+{
+  "token": "5ed13b2f-0acd-4d1c-a410-f4e1a930d76a"
+}
+
+

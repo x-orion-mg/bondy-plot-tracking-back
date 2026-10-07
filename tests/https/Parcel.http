@@ -1,0 +1,38 @@
+GET {{site_url}}/api/v1/projects/parcel
+Content-Type: application/json
+
+### GET request parcel project by id
+GET {{site_url}}/api/v1/projects/parcel/1
+Accept: application/json
+
+
+### GET request child project by id with parent id and partner id for parcel list
+GET {{site_url}}/api/v1/projects/parents/3/partners/11/child/11/parcel
+Accept: application/json
+
+### GET request child project by id with parent id and partner id for parcel list
+GET {{site_url}}/api/v1/projects/parents/22/partners/65/child/11/parcel
+Accept: application/json
+
+### GET request child project by id with parent id and partner id for parcel list
+GET {{site_url}}/api/v1/projects/parents/22/partners/65/child/11/parcel/11
+Accept: application/json
+
+### GET request child project by id with parent id and partner id for parcel list
+GET {{site_url}}/api/v1/projects/parents/1/partners/1/child/1/parcel/1/trees
+Accept: application/json
+
+
+### GET request tree by track code with parent id and partner id for parcel list ( not allowed in user)
+GET {{site_url}}/api/v1/projects/parents/1/partners/1/child/1/parcel/1/trees/BON-2024-1-0029
+Accept: application/json
+
+### GET request tree by track code with parent id and partner id for parcel list ( allowed in user)
+GET {{site_url}}/api/v1/projects/parents/1/partners/1/child/1/parcel/1/trees/BON-2024-1-0001
+Accept: application/json
+
+### GET request tree by track code with parent id and partner id for parcel list (tree not found)
+GET {{site_url}}/api/v1/projects/parents/1/partners/1/child/1/parcel/1/trees/BON-2024-1-000100
+Accept: application/json
+
+

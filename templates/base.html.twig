@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{{ app_name }}</title>
+
+    {% block stylesheets %}
+        <!-- Favicon -->
+        <link rel="shortcut icon" href="{{ asset('admin/assets/media/image/icon-bondy.png') }}"/>
+
+        <!-- Plugin styles -->
+        <link rel="stylesheet" href="{{ asset('admin/vendors/bundle.css') }}" type="text/css">
+
+        <!-- Slick -->
+        <link rel="stylesheet" href="{{ asset('admin/vendors/slick/slick.css') }}" type="text/css">
+        <link rel="stylesheet" href="{{ asset('admin/vendors/slick/slick-theme.css') }}" type="text/css">
+
+        <!-- Daterangepicker -->
+        <link rel="stylesheet" href="{{ asset('admin/vendors/datepicker/daterangepicker.css') }}" type="text/css">
+
+        <!-- DataTable -->
+        <link rel="stylesheet" href="{{ asset('admin/vendors/dataTable/datatables.min.css') }}" type="text/css">
+
+        <!-- App styles -->
+        <link rel="stylesheet" href="{{ asset('admin/vendors/colorpicker/css/bootstrap-colorpicker.min.css') }}"
+              type="text/css">
+        <link rel="stylesheet" href="{{ asset('admin/vendors/select2/css/select2.min.css') }}" type="text/css">
+        <link rel="stylesheet" href="{{ asset('admin/vendors/colorpicker/css/bootstrap-colorpicker.min.css') }}"
+              type="text/css">
+        <link rel="stylesheet" href="{{ asset('admin/assets/css/app.min.css') }}" type="text/css">
+        <link rel="stylesheet" href="{{ asset('admin/assets/css/global.css') }}" type="text/css">
+        <link rel="stylesheet" href="{{ asset('admin/vendors/lightbox/magnific-popup.css') }}" type="text/css">
+        <link rel="stylesheet" href="{{ asset('admin/vendors/summernote/summernote-bs4.css') }}">
+    {% endblock %}
+</head>
+<body class="small-navigation">
+
+<!-- begin::preloader-->
+<div class="preloader">
+    <div class="preloader-icon"></div>
+</div>
+<!-- end::preloader -->
+
+<!-- BEGIN: Sidebar Group -->
+{{ include('_sidebar.html.twig') }}
+<!-- END: Sidebar Group -->
+
+<!-- begin::main -->
+<div class="layout-wrapper">
+
+    <!-- begin::header -->
+    {{ include('_header.html.twig') }}
+    <!-- end::header -->
+
+    <div class="content-wrapper">
+
+        <!-- begin::navigation -->
+        {{ include('_navigation.html.twig') }}
+        <!-- end::navigation -->
+        {% set current_url = app.request.uri %}
+        {% set profile_current_user = app.user and app.user.profile ? app.user.profile.label : '' %}
+        <div class="content-body">
+
+            <div class="content">
+                {% block body %}
+                {% endblock %}
+            </div>
+            <!-- begin::footer -->
+            {{ include('_footer.html.twig') }}
+            <!-- end::footer -->
+
+        </div>
+    </div>
+</div>
+<!-- end::main -->
+
+{% block javascripts %}
+    <!-- Plugin scripts -->
+    <script src="{{ asset('admin/vendors/bundle.js') }}"></script>
+
+    <!-- Apex chart -->
+    <script src="https://apexcharts.com/samples/assets/irregular-data-series.js"></script>
+    <script src="{{ asset('admin/vendors/charts/apex/apexcharts.min.js') }}"></script>
+
+    <!-- Daterangepicker -->
+    <script src="{{ asset('admin/vendors/datepicker/daterangepicker.js') }}"></script>
+
+    <!-- DataTable -->
+    <script src="{{ asset('admin/vendors/dataTable/datatables.min.js') }}"></script>
+
+    <!-- Dashboard scripts -->
+    <script src="{{ asset('admin/assets/js/examples/dashboard.js') }}"></script>
+
+    <!-- Vamp -->
+    <script src="{{ asset('admin/vendors/vmap/jquery.vmap.min.js') }}"></script>
+    <script src="{{ asset('admin/vendors/vmap/maps/jquery.vmap.usa.js') }}"></script>
+    <script src="{{ asset('admin/assets/js/examples/vmap.js') }}"></script>
+    <script src="{{ asset('admin/assets/js/js_backoffice/lib/jquery.validate.min.js') }}"></script>
+    <script src="{{ asset('admin/assets/js/js_backoffice/form_validation.js') }}"></script>
+
+    <!-- To use theme colors with Javascript -->
+    <div class="colors">
+        <div class="bg-primary"></div>
+        <div class="bg-primary-bright"></div>
+        <div class="bg-secondary"></div>
+        <div class="bg-secondary-bright"></div>
+        <div class="bg-info"></div>
+        <div class="bg-info-bright"></div>
+        <div class="bg-success"></div>
+        <div class="bg-success-bright"></div>
+        <div class="bg-danger"></div>
+        <div class="bg-danger-bright"></div>
+        <div class="bg-warning"></div>
+        <div class="bg-warning-bright"></div>
+    </div>
+
+    <script src="{{ asset('admin/assets/js/examples/pages/ecommerce-dashboard.js') }}"></script>
+
+    <!-- App scripts -->
+    <script src="{{ asset('admin/assets/js/examples/pages/project-list.js') }}"></script>
+    <script src="{{ asset('admin/vendors/select2/js/select2.min.js') }}"></script>
+    <script src="{{ asset('admin/vendors/colorpicker/js/bootstrap-colorpicker.min.js') }}"></script>
+
+    <script src="{{ asset('admin/assets/js/app.min.js') }}"></script>
+    <script src="{{ asset('admin/assets/js/main.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            toastr.options = {
+                "closeButton": false,
+                "progressBar": true,
+                "timeOut": "5000",
+                "positionClass": "toast-top-center"
+            };
+            {% for type, messages in app.flashes %}
+            {% for message in messages %}
+            toastr.{{ type }}('{{ message|escape('js') }}');
+            {% endfor %}
+            {% endfor %}
+        });
+    </script>
+{% endblock %}
+</body>
+</html>

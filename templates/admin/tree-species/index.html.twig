@@ -1,0 +1,89 @@
+{% extends 'base.html.twig' %}
+
+{% set menu_settings = true %}
+{% set menu_manage_tree_species = true %}
+
+{% block body %}
+    <div class="page-header justify-content-between">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="{{ path('admin_dashboard') }}">Accueil</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{{ current_url }}">Paramétrages</a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">Especes d'arbre</li>
+            </ol>
+        </nav>
+        <div>
+            <a href="{{ path('tree_species_create') }}" class="btn btn-outline-primary" title="Ajouter" >Ajouter</a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive">
+
+                        <table id="myTable" class="table table-striped table-bordered">
+                            <thead>
+                                <tr>
+                                    <th class="text-center no-sort">Icone</th>
+                                    <th class="no-sort">Nom vernaculaire</th>
+                                    <th class="no-sort">Nom scientifique</th>
+                                    <th class="no-sort">Type d'utilisation</th>
+                                    <th class="no-sort">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% if treeSpecies %}
+                                {% for specie in treeSpecies %}
+                                <tr>
+                                    <td class="text-center">
+                                        <figure class="avatar avatar-sm mr-2">
+                                            <img src="{{ specie.icon }}" class="rounded-circle" alt="avatar">
+                                        </figure>
+                                    </td>
+                                    <td>{{ specie.commonName }}</td>
+                                    <td>{{ specie.scientificName }}</td>
+                                    <td>{{ specie.usageType.label }}</td>
+                                    <td>
+                                        {# <a href="#" class="text-secondary" 
+                                        data-toggle="modal"  data-target="#editTreeSpecyModal" title="Modifier"
+                                            data-id="{{ specie.id }}"
+                                            data-icon="{{ specie.icon }}"
+                                            data-name="{{ specie.commonName }}" 
+                                            data-scientific-name="{{ specie.scientificName }}"
+                                            data-usage-type="{{ specie.usageType.id }}" >
+                                            <i class="ti-pencil"></i>
+                                        </a> #}
+                                        <a href="{{ path('tree_species_edit', {'id': specie.id}) }}" class="text-secondary ml-2" title="Voir">
+                                            <i class="ti-pencil"></i>
+                                        </a>
+                                        <a href="#" class="text-danger ml-2" data-toggle="modal" data-target="#deleteModal" title="Supprimer"
+                                            data-id="{{ specie.id }}">
+                                            <i class="ti-trash"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            {% endif %}
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('admin/vendors/lightbox/jquery.magnific-popup.min.js') }}"></script>
+    <script src="{{ asset('admin/assets/js/js_backoffice/tree-species.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,74 @@
+nelmio_security:
+    # prevents framing of the entire site
+    clickjacking:
+        paths:
+            '^/.*': DENY
+
+    # disables content type sniffing for script resources
+    content_type:
+        nosniff: true
+
+    # Configure secure referrer policy
+    referrer_policy:
+        enabled: true
+        policies:
+            - 'no-referrer'
+            - 'strict-origin-when-cross-origin'
+            
+    # Content Security Policy
+    csp:
+        enabled: true
+        report_logger_service: logger
+        hosts: []
+        content_types: []
+        enforce:
+            default-src:
+                - 'self'
+                - 'unsafe-inline'
+                - 'unsafe-eval'  
+            object-src:
+                - 'none'
+            script-src:
+                - 'self'
+                - 'unsafe-inline'
+                - 'unsafe-eval'
+                - 'https://apexcharts.com'
+            style-src:
+                - 'self'
+                - 'unsafe-inline'
+            img-src:
+                - 'self'
+                - 'data:'  # Pour les images encodées en base64
+                - 'https://cdn.pixabay.com'
+                - 'https://img.freepik.com'
+                - 'https://zupimages.net'
+            upgrade-insecure-requests: true
+    
+    # Protection contre les attaques XSS
+    xss_protection:
+        enabled: true
+        mode_block: true
+    
+    # Force l'utilisation de HTTPS
+    forced_ssl:
+        enabled: false
+        hsts_max_age: 31536000
+        hsts_subdomains: true
+        hsts_preload: true
+        
+    # Gère les redirections externes
+    external_redirects:
+        abort: true
+        allow_list:  # Nom correct de l'option (remplace whitelist)
+            - 'example.com'
+            # Ajoutez d'autres domaines au besoin
+            
+    # Signed cookies
+    signed_cookie:
+         names:
+            - 'remember_me'  # Signez uniquement les cookies non-critiques pour l'authentification
+            # - '*'  # Commentez cette ligne qui peut causer des problèmes d'authentification
+            
+    # Flexible SSL
+    flexible_ssl:
+        enabled: false

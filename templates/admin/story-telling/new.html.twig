@@ -1,0 +1,147 @@
+{% extends 'base.html.twig' %}
+
+{% set routes = {
+    'parcel': 'parcel_edit',
+    'project': 'project_child_edit',
+    'tree-species': 'tree_species_edit'
+} %}
+{% set routeName = routes[entityType] | default('project_child_edit') %}
+
+{% block body %}
+    <div class="page-header justify-content-between">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href={{ path('admin_dashboard') }}>Accueil</a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">Ajout story telling</li>
+            </ol>
+        </nav>
+        <div>
+            <a href="{{ path(routeName,{'id':entityId}) }}" class="btn btn-outline-primary" title="List">Retour</a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card">
+                <div class="app-sidebar-menu">
+                    <div class="list-group list-group-flush">
+                        <a href="#infoge" class="list-group-item active d-flex align-items-center">
+                            <i data-feather="globe" class="mr-2 width-15 height-15"></i>
+                            Informations générales
+                        </a>
+                        {# <a href="#galerie" class="list-group-item d-flex align-items-center">
+                    <i data-feather="image" class="mr-2 width-15 height-15"></i>
+                    Galerie
+                </a> #}
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-md-9">
+
+            <div class="card" id="infoge">
+                <div class="card-header">
+                    Informations générales
+                </div>
+                <div class="card-body">
+                    <form id="story-telling-new"
+                            action="{{ path('story_telling_new', {'entityId': entityId,'entityType':entityType}) }}"
+                            method="POST"
+                            enctype="multipart/form-data">
+                        <div class="form-group">
+                            <label class="w-100">Titre<span class="text-danger">*</span>
+                                <input type="text" class="form-control"
+                                       aria-describedby="emailHelp" placeholder="" name="title" required>
+                            </label>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="story-telling-upload-file">Bannière image<span class="text-danger">*</span></label>
+                            <div class="custom-file">
+                                <input id="story-telling-upload-file" type="file" class="custom-file-input" name="uploadFile" required>
+                                <label class="custom-file-label" for="customFile">Choisissez un fichier</label>
+                            </div>
+                            <small>Dimension 707x205px</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="w-100">Extrait
+                                <textarea class="form-control" name="description" maxlength="300"></textarea>
+                            </label>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="w-100">Contenu<span class="text-danger">*</span>
+                                <textarea name="content"
+                                          class="form-control summernote-editor"
+                                          required></textarea>
+                            </label>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary float-right">Enregistrer</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('admin/vendors/lightbox/jquery.magnific-popup.min.js') }}"></script>
+    <script src="{{ asset('admin/vendors/fixto/fixto.js') }}"></script>
+    <script src="{{ asset('admin/assets/js/anchor.js') }}"></script>
+    <script src="{{ asset('admin/vendors/summernote/summernote-bs4.min.js') }}"></script>
+    <script>
+        $(function () {
+            $(document).ready(function () {
+                $('.select2-example').select2({
+                    placeholder: 'Selectionner'
+                });
+                
+                $('.summernote-editor').summernote({
+                    placeholder: 'Contenu...',
+                    tabsize: 2,
+                    height: 100,
+                });
+
+                $('input.datepick').daterangepicker({
+                    singleDatePicker: true,
+                    showDropdowns: true,
+                    locale: {
+                        format: 'DD/MM/YYYY', // Format français
+                        applyLabel: "Appliquer",
+                        cancelLabel: "Annuler",
+                        daysOfWeek: ["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"],
+                        monthNames: [
+                            "Janvier", "Février", "Mars", "Avril", "Mai", "Juin",
+                            "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"
+                        ],
+                        firstDay: 1 // Lundi comme premier jour de la semaine
+                    }
+                });
+
+                $('.app-sidebar-menu').fixTo('body', {
+                    zIndex: 1,
+                    top: 75
+                });
+
+                let magnificPopupGalleryConfig = {
+                    type: 'image',
+                    gallery: {
+                        enabled: true
+                    }
+                };
+                $('.image-popup-gallery-item').magnificPopup(magnificPopupGalleryConfig);
+
+                $('.app-sidebar-menu .list-group >a').on('click', function () {
+                    $('.app-sidebar-menu .list-group >a').removeClass('active');
+                    $(this).addClass('active');
+                })
+
+            });
+        })
+    </script>
+{% endblock %}

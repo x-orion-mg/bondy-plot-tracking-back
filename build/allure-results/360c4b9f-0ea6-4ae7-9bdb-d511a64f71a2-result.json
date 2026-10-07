@@ -1,0 +1,43 @@
+{
+    "uuid": "360c4b9f-0ea6-4ae7-9bdb-d511a64f71a2",
+    "name": "App\\Tests\\Controller\\Admin\\GalleryControllerTest::testEdit",
+    "description": null,
+    "descriptionHtml": null,
+    "start": 1740492799337,
+    "stop": 1740492800138,
+    "status": "broken",
+    "statusDetails": {
+        "known": null,
+        "muted": null,
+        "flaky": null,
+        "message": "An exception occurred in the driver: SQLSTATE[HY000] [2002] php_network_getaddresses: getaddrinfo for bondy-db failed: Temporary failure in name resolution",
+        "trace": null
+    },
+    "stage": "finished",
+    "steps": [],
+    "attachments": [],
+    "parameters": [],
+    "historyId": "1649e9c7080ee5e1aee8cae8371c20c4",
+    "testCaseId": "2f3f4eafa9c0265d7f4b09e85b6d0eff",
+    "rerunOf": null,
+    "fullName": "App\\Tests\\Controller\\Admin\\GalleryControllerTest::testEdit",
+    "labels": [
+        {
+            "name": "testClass",
+            "value": "App\\Tests\\Controller\\Admin\\GalleryControllerTest"
+        },
+        {
+            "name": "testMethod",
+            "value": "testEdit"
+        },
+        {
+            "name": "host",
+            "value": "DPUMG7C1GQ2211"
+        },
+        {
+            "name": "thread",
+            "value": null
+        }
+    ],
+    "links": []
+}

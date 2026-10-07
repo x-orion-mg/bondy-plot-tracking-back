@@ -1,0 +1,158 @@
+{% extends 'base.html.twig' %}
+
+{% set menu_partner = true %}
+{% set menu_manage_partner = true %}
+
+{% set partner = dataCustomers.partner %}
+{% set customers = dataCustomers.customers ?? [] %}
+
+{% block body %}
+    <div class="page-header justify-content-between">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href={{ path('admin_dashboard') }}>Accueil</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{{ path('partner_index') }}">Gestion des partenaires</a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">Gestion des clients finaux</li>
+            </ol>
+        </nav>
+        <div>
+            <a href="{{ path('partner_index') }}" class="btn btn-outline-primary" title="List">Retour</a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+
+            <div class="row">
+                <div class="col-lg-12 col-md-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <h6 class="card-title">Import des clients finaux</h6>
+                            <form id="customer-import"
+                                  action="{{ path('user_import', {'userId':user.id}) }}"
+                                  method="POST"
+                                  enctype="multipart/form-data">
+                                <div class="form-group">
+                                    <label class="w-100">Importer le fichier CSV<span
+                                                class="text-danger">*</span>
+                                        <div class="custom-file">
+                                            <input type="file" class="custom-file-input" name="csvFile" required>
+                                            <div class="custom-file-label">Choisissez un
+                                                fichier
+                                            </div>
+                                        </div>
+                                    </label>
+                                </div>
+                                <div>Utiliser le modèle suivant : <a href="{{ asset('File/csv/import-user.csv') }}">ModeleImportClientFinaux.csv</a></div>
+                                <div class="text-right">
+                                    <button type="submit" class="btn btn-primary ">Importer</button>
+                                </div>
+                            </form>
+                            <div>
+                                <span class="w-100"><strong>Nombre total d’arbres&nbsp;:&nbsp;</strong> {{ totalTrees }}</span>
+                            </div>
+                            <div>
+                                <span class="w-100"><strong>Nombre d’arbres disponibles&nbsp;:&nbsp;</strong> {{ totalAvailableTrees }}</span>
+                            </div>
+                            <div>
+                                <span class="w-100"><strong>Nombre d’arbres rattachés&nbsp;:&nbsp;</strong> {{ totalUnavailableTrees }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                            <h6 class="card-title">Filtre :</h6>
+                            <input type="text" name="daterangepicker" id="filter-date" class="form-control col-md-6">
+                            <input type="hidden" name="dateStart" id="dateStart">
+                            <input type="hidden" name="dateEnd" id="dateEnd">
+                        </div>
+                        <div class="card-body form-row">
+                            <div class="table-responsive col-md-11">
+                                <table id="table-final-customers" class="table table-striped table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Nom</th>
+                                            <th>Email</th>
+                                            <th>Date d'import</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="text-right col-md-1">
+                                <input type="hidden" name="partnerId" value="{{ partner.id }}" />
+                                <a href="javascript:void(0)" class="btn btn-primary text-white" id="export-excel">Exporter</a>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" tabindex="-1" role="dialog" id="reponse-import">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Titre dynamique</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-success" role="alert">
+                        <h4 class="alert-heading">Félicitation!</h4>
+                        <p>Les clients finaux ont été importés avec succès.</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" >Télécharger</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        var url_list_final_customers = "{{ path('customer_finals_ajax', {'id': partner.id}) }}";
+        var url_export_qrcode_final_customer = "{{ path('customer_finals_export_qrcode', {'id': 0}) }}";
+    </script>
+    <script>
+        document.getElementById('export-excel').addEventListener('click', function() {
+            var partnerId = document.querySelector('input[name="partnerId"]').value;
+            let valueTable = $('#table-final-customers').DataTable();
+            $.ajax({
+                url: "{{ path('customer_finals_export_excel') }}",
+                type: "GET",
+                data: {
+                    partnerId: partnerId,
+                    search: valueTable.search(),
+                    dateStart: $('#dateStart').val(),
+                    dateEnd: $('#dateEnd').val(),
+                },
+                success: function (response) {
+                    if (response.success === true) {
+                        downloadCSV(response.data.url,response.data.fileName);
+                        toastr.success('L\'élément a été télécharger avec succès.');
+                    } else {
+                        toastr.error( 'Un erreur s\'est produite lors de l\'export: Aucun élément trouvé.');
+                    }
+                }
+            })
+        });
+        $('#reponse-import').on('hidden.bs.modal', function () {
+            location.reload();
+        });
+    </script>
+    <script src="{{ asset('admin/assets/js/js_backoffice/final-customer.js') }}"></script>
+{% endblock %}

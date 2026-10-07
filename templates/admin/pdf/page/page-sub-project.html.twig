@@ -1,0 +1,21 @@
+<div class="page page-7">
+	<img class="background" src="{{ images['background'] }}" alt="image-sub-project">
+
+	<img class="mini-logo" src="{{ images[0] }}" alt="mini-logo">
+
+	<img class="top-logo" src="{{ convert_file_to_base64(user.logo) }}" alt="logo partener">
+
+
+	<div class="text">
+
+		<h2 class="title">The projects you support</h2>
+		<h3>{{ subProject.name }}</h3>
+		<div class="para rte">
+			{{ subProject.historyContent|raw }}
+		</div>
+
+	</div>
+
+
+	<img class="femme" src="{{ crop_to_base64(subProject.banner) }}" alt="femme">
+</div>

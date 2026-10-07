@@ -1,0 +1,93 @@
+{% extends 'base.html.twig' %}
+
+{% set menu_settings = true %}
+{% set menu_manage_tree_species = true %}
+
+{% block body %}
+    <div class="page-header justify-content-between">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="{{ path('admin_dashboard') }}">Accueil</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{{  path('tree_species_index') }}">Paramétrages</a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">Especes d'arbre</li>
+            </ol>
+        </nav>
+        <div>
+            <a href="{{ path('tree_species_index') }}" class="btn btn-outline-primary" title="List">Retour</a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card">
+                <div class="app-sidebar-menu">
+                    <div class="list-group list-group-flush">
+                        <a href="#infoge" class="list-group-item active d-flex align-items-center">
+                            <i data-feather="globe" class="mr-2 width-15 height-15"></i>
+                            Informations générales
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="card" id="infoge">
+                <div class="card-header">
+                    Informations générales
+                </div>
+                <div class="card-body">
+                    {{ form_start(form, {attr: {'id': 'id-form-create-tree-species', 'enctype': 'multipart/form-data'}}) }}
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label>Bannière image <span class="text-danger">*</span></label>
+                                <div class="custom-file">
+                                    <input type="file" class="custom-file-input" name="uploadFile" required>
+                                    <label class="custom-file-label" for="customFile">Choisissez un fichier</label>
+                                </div>
+                                <small>Dimension 707x205px</small>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label>Icone<span class="text-danger">*</span></label>
+                                <div class="custom-file">
+                                    <input type="file" class="custom-file-input" name="iconFile">
+                                    <label class="custom-file-label" for="customFile">Choisissez un fichier</label>
+                                    <small>Formats acceptés : jpeg, jpg, png,svg<br>
+                                        Taille maximum image : 5 mo <br>
+                                        Dimension 29x26px
+                                    </small>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                {{ form_row(form.commonName) }}
+                            </div>
+                            <div class="form-group col-md-6">
+                                {{ form_row(form.scientificName) }}
+                            </div>
+                            <div class="form-group col-md-6">
+                                {{ form_row(form.usageType) }}
+                            </div>
+                            <div class="form-group col-md-6">
+                                {{ form_row(form.color) }}
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary float-right">Enregistrer</button>
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('admin/vendors/lightbox/jquery.magnific-popup.min.js') }}"></script>
+    <script src="{{ asset('admin/vendors/fixto/fixto.js') }}"></script>
+    <script src="{{ asset('admin/assets/js/anchor.js') }}"></script>
+    <script src="{{ asset('admin/assets/js/table-repeater.js') }}"></script>
+    <script src="{{ asset('admin/assets/js/js_backoffice/tree-species.js') }}"></script>
+{% endblock %}

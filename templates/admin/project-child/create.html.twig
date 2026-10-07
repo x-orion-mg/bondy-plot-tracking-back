@@ -1,0 +1,230 @@
+{% extends 'base.html.twig' %}
+
+{% set menu_partner = true %}
+{% set menu_manage_prj_partner = true %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('admin/vendors/lightbox/magnific-popup.css') }}" type="text/css">
+    <link rel="stylesheet" href="{{ asset('admin/vendors/summernote/summernote-bs4.css') }}">
+    <style>
+    .select2-container .select2-selection--single{
+        height: initial;
+    }
+    </style>
+{% endblock %}
+
+{% block body %}
+
+    <div class="page-header justify-content-between">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href={{ path('admin_dashboard') }}>Accueil</a>
+                </li>
+                <li class="breadcrumb-item">
+                     <a href="{{ path('project_child_index') }}">Gestion des partenaires</a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">Ajout / Modification de projet partenaire</li>
+            </ol>
+        </nav>
+        <div>
+            <a href="{{ path('project_child_index') }}" class="btn btn-outline-primary" title="List" >Retour</a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card">
+                <div class="app-sidebar-menu">
+                    <div class="list-group list-group-flush">
+                        <a href="#infoge" class="list-group-item active d-flex align-items-center">
+                            <i data-feather="globe" class="mr-2 width-15 height-15"></i>
+                            Informations générales
+                        </a>
+                        <a href="#localisation" class="list-group-item d-flex align-items-center">
+                            <i data-feather="map-pin" class="mr-2 width-15 height-15"></i>
+                            Localisation
+                        </a>
+                        <a href="#history" class="list-group-item d-flex align-items-center">
+                            <i data-feather="book" class="mr-2 width-15 height-15"></i>
+                            Histoire du projet
+                        </a>
+                        <a href="#chiffrecles" class="list-group-item d-flex align-items-center">
+                            <i data-feather="bar-chart-2" class="mr-2 width-15 height-15"></i>
+                            Chiffres clés
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-md-9">
+            {{ form_start(form, {attr: {'id': 'id-create-project-child', 'enctype': 'multipart/form-data'}}) }}
+                <div class="card" id="infoge">
+                    <div class="card-header">
+                        Informations générales
+                    </div>
+                    <div class="card-body">
+
+                        <div class="form-row">
+                            <div class="form-group col-md-4">
+                                {{ form_row(form.title) }}
+                            </div>
+                            <div class="form-group col-md-4">
+                                {{ form_row(form.projectParent) }}
+                            </div>
+
+                            <div class="form-group col-md-4">
+                                {{ form_row(form.user) }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Bannière image <span class="text-danger">*</span></label>
+                            <div class="custom-file">
+                                <input type="file" class="custom-file-input" name="uploadFile" required>
+                                <label class="custom-file-label" for="customFile">Choisissez un fichier</label>
+                            </div>
+                            <small>Dimension 707x205px</small>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                {{ form_row(form.startDate) }}
+                            </div>
+
+                            <div class="form-group col-md-6">
+                                {{ form_row(form.projectStep) }}
+                            </div>
+                        </div>
+
+                        {# <div class="form-group form-check">
+                            <input type="checkbox" class="form-check-input" id="exampleCheck1">
+                            <label class="form-check-label" for="exampleCheck1">Envoyer une notification ?</label>
+                        </div> #}
+                    </div>
+                </div>
+
+                <div class="card" id="localisation">
+                    <div class="card-header">
+                        Localisation
+                    </div>
+                    <div class="card-body">
+                        <div class="form-row">
+                        <div class="form-group col-md-4">
+                            <label class="w-100">Pays
+                                <input type="text" disabled class="form-control" id="country"
+                                       aria-describedby="emailHelp" placeholder="" value="">
+                            </label>
+                        </div>
+
+                        <div class="form-group col-md-4">
+                            <label class="w-100">Région
+                            <input type="text" disabled class="form-control" id="region"
+                                   aria-describedby="emailHelp" placeholder="" value="">
+                            </label>
+                        </div>
+                        <div class="form-group col-md-4">
+                            {{ form_row(form.city) }}
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            {{ form_row(form.latitude) }}
+                        </div>
+
+                        <div class="form-group col-md-6">
+                            {{ form_row(form.longitude) }}
+                        </div>
+                    </div>
+                    </div>
+
+                </div>
+
+                <div class="card" id="history">
+                    <div class="card-header">
+                        Histoire du projet
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            {{ form_row(form.history) }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" id="chiffrecles">
+                    <div class="card-header">
+                        Chiffres clés
+                    </div>
+                    <div class="card-body">
+                        <ul class="nav nav-tabs mb-3" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" id="home-tab" data-toggle="tab" href="#impact-environnemental" role="tab"
+                                    aria-controls="home" aria-selected="true">Impact environnemental</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="profile-tab" data-toggle="tab" href="#impact-social" role="tab"
+                                    aria-controls="profile" aria-selected="false">Impact Social</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="contact-tab" data-toggle="tab" href="#impact-economique" role="tab"
+                                    aria-controls="contact" aria-selected="false">Impact Economique</a>
+                            </li>
+                        </ul>
+                        <div class="tab-content">
+                            <div class="tab-pane fade show active" id="impact-environnemental" role="tabpanel"
+                                 aria-labelledby="home-tab">
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        {{ form_row(form.environmentalImpactPlantedTrees) }}
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        {{ form_row(form.environmentalImpactCO2) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="impact-social" role="tabpanel" aria-labelledby="profile-tab">
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        {{ form_row(form.socialImpactSeasonalJobs) }}
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        {{ form_row(form.socialImpactIndirectBeneficiaries) }}
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        {{ form_row(form.socialImpactPartnerFarmer) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="impact-economique" role="tabpanel" aria-labelledby="contact-tab">
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        {{ form_row(form.economicImpactSustainableEmployment) }}
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        {{ form_row(form.economicImpactRestoredHectares) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="{{ path('project_child_index') }}" class="btn text-white btn-secondary">Annuler</a>
+                    <button type="submit" class="btn btn-primary">Enregistrer</button>
+                </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        var url_parent_location = "{{ path('project_parent_location') }}";
+    </script>
+    <script src="{{ asset('admin/vendors/lightbox/jquery.magnific-popup.min.js') }}"></script>
+    <script src="{{ asset('admin/vendors/fixto/fixto.js') }}"></script>
+    <script src="{{ asset('admin/vendors/summernote/summernote-bs4.min.js') }}"></script>
+    <script src="{{ asset('admin/assets/js/anchor.js') }}"></script>
+    <script src="{{ asset('admin/assets/js/js_backoffice/partner-project-edit.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,2 @@
+
+FROM registry.pulse.mg/dev/bondy_back:bondy_back-0.1
